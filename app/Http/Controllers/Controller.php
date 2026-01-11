@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-abstract class Controller
-{
-    //
+
+use App\Helpers\AuthShare;
+abstract class Controller extends AuthShare {
+
 }

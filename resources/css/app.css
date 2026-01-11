@@ -6,6 +6,202 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+	--font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+		'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+
+
+
+/*
+	A lot of the forums CSS can be pulled out to its own file since it's only really necessary when viewing the forums
+*/
+
+
+/* This is just the misc testing stuff... either move it to the right place, or get rid of it :) */
+.wrapper { position: relative; display: flex; margin: 1em }
+.wrapper > div { margin: 2em; }
+.navbar, .footer { background-color: #555; margin: 1em 0; line-height: 2.8em; padding: 0.7em 0; }
+.footer { text-align: center; border-radius: 0 0 2em 2em; 
+	margin-bottom: 3em; }
+.sidebar { flex: 2; }
+.sidebar > div { background-color: #444; padding: 0.7em 0.5em; text-align: center }
+.sidebar > div + div { margin-top: 2em; }
+.content { flex: 4;	background-color: #333; padding: 1em; }
+.sidebar > div, .content, .navbar, .footer {
+	background-color: rgba(0,0,0,0.6);
+	border: 2px solid black;
+}
+.navbar {
+	margin-top: 7em;
+	border-radius: 2em 2em 0 0;
+	display: flex;
+	list-style: none;
+	text-align: center;
+}
+.navbar li {
+	flex: 1;
+}
+.navbar li + li {
+	border-left: 6px double black;
+}
+.navbar li a { display: block }
+
+.navbar li.logo {
+	flex: 2;
+	position: relative;
+	margin: 0 0.5em;
+	max-width: 336px;
+}
+.navbar li.logo, .navbar li.logo + li {
+	border-left: unset;
+}
+.navbar li.logo a {
+	position: absolute;
+	top: -4em;
+}
+
+a { transition: 0.4s }
+a, a:visited { color: #7fd9f9 }
+a:hover { color: #f9dc7f }
+i.cal {
+	display: inline-block;
+	border: 1px solid white;
+	border-top-width: 6px;
+	border-radius: 3px;
+	width: 2em;
+	height: 2em;
+	font-style: normal;
+	font-size: 0.9em;
+}
+.cal {
+	font-family: monospace;
+}
+/*span.cal { font-size: 0.95em }*/
+span.cal > i.cal { margin-right:1em }
+.flexbody { display:flex; }
+.flexbody > span { flex: 1 }
+.crumbs { text-align:right }
+h1, h2, h3, h4, h5, h6 {
+	font-size: revert;
+	font-weight: revert;
+}
+
+
+
+
+
+/*
+ | Root Defaults
+ |----------------------------*/
+	:root {
+		--bg-dark: #0d1d20;
+		--bg-light: #402c19;
+
+
+
+
+		/* These were taken right from my Lanterns CSS, so these should PROBABLY get changed for Springboard :) */
+		--bg-parallax: #0e2417;
+
+		--success: #9dc293;
+
+		--alert-bg: #d9edf7;
+		--alert-border: #90bcc5;
+		--alert-text: #31709c;
+
+		--danger-bg: #f2dede;
+		--danger-border: #b5969b;
+		--danger-text: #b04465;
+
+		--success-bg: #dff0d8;
+		--success-border: #9fb78b;
+		--success-text: #3c763d;
+
+		--warn-bg: #fcf8e3;
+		--warn-border: #ccba96;
+		--warn-text: #a86d3b;
+
+		--default-border: #b19f76;
+	}
+
+
+/*
+ | Main Content Holders
+ |----------------------------*/
+ 	body {
+ 		background: var(--bg-dark) url("/images/layout/bg_night.png") repeat-x top center;
+ 		/*background: var(--bg-light) url("/images/layout/bg_day.png") repeat-x top center;*/
+ 		background-attachment: fixed;
+ 		color: #fff;
+ 		margin: 2em;
+
+ 		background-size: 650px;
+ 	}
+
+
+/*
+ | Default Fixes
+ |----------------------------*/
+
+
+/*
+ | Helpers
+ |----------------------------*/
+	.clearfix::after { content: ""; clear: both; display: table; }
+
+
+/*
+ | Navbar
+ |----------------------------*/
+
+
+/*
+ | Breadcrumbs
+ |----------------------------*/
+ 	.crumbs { font-style: italic; font-size: 0.9em; }
+
+
+/*
+ | Pagination
+ |----------------------------*/
+
+
+/*
+ | Sidebar
+ |----------------------------*/
+
+
+/*
+ | Alerts
+ |----------------------------*/
+
+
+/*
+ | Containers
+ |----------------------------*/
+
+
+/*
+ | Forms
+ |----------------------------*/
+
+
+/*
+ | Forum Boards
+ |----------------------------*/
+
+
+/*
+ | Board Threads
+ |----------------------------*/
+
+
+/*
+ | Forum Threads
+ |----------------------------*/
+
+
+/*
+ | Private Messages
+ |----------------------------*/
