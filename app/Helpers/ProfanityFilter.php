@@ -40,7 +40,7 @@ class ProfanityFilter
 	private static function runChecks(string $content): void {
 		// We want to check for blocked contexts first because it'll be a hard reject
 		// Remember that $hit_context will be populated to check on the other side
-		if(self::checkContexts($check_context)) return;
+		if(self::checkContexts($content)) return;
 
 
 		// We didn't hit any blocked contexts, so follow up with the black/whitelists
