@@ -39,7 +39,7 @@
 				{!! $post->poster->display_avatar !!}
 				<b class="name">{!! $post->poster->display_name !!}</b>
 			</div>
-			@if(($user->isBlocked($post->poster_id) || $user->findBlock($post->poster_id)) && !$user->perms('block_bypass'))
+			@if($is_auth && ($user->isBlocked($post->poster_id) || $user->findBlock($post->poster_id)) && !$user->perms('block_bypass'))
 				Blocked message.
 			@else
 				<div class="post-text {{ $post->is_edited ? 'edited' : ''}}">

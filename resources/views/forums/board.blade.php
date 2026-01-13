@@ -19,7 +19,7 @@
 	<h5 class="mb-0">Threads</h5>
 	@foreach($threads as $thread)
 	<!-- Should we hide for both sides of a block???? -->
-		@if(!$user->findBlock($thread->poster_id))
+		@if($is_auth && !$user->findBlock($thread->poster_id))
 			<div class="thread">
 				<div class="thread-icon">
 					{!! $thread->display_icon !!}
