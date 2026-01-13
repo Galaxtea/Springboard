@@ -99,8 +99,8 @@ class ProfanityFilter
 			if($words == []) return null;
 
 
-			// sub-words get \S* before and after
-			$bounds = $type == 'substring' ? '\S*' : '';
+			// sub-words get [^\s\[\]]* before and after -- this collects surrounding letters, but breaks w/ ] or [ for bbcode
+			$bounds = $type == 'substring' ? '[^\s\[\]]*' : '';
 			$endings = $type == 'substring' ? '' : '(?:'.implode('|', Blacklist::where('filter_type', '=', 'ending')->pluck('subbed')->toArray()).')*';
 
 
