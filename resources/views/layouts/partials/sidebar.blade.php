@@ -1,3 +1,4 @@
+@inject('onlines', 'App\Services\User\OnlineService')
 <div class="sidebar">
 	<div>
 		@if($is_auth)
@@ -9,8 +10,8 @@
 		@endif
 	</div>
 	<div class="flexbody">
-		<span><a href="/online">{{ $online_count }} Online</a></span>
-		<span class="cal">{!! $time !!}</span>
+		<span><a href="/online">{{ $onlines::count() }} Online</a></span>
+		<span class="cal">{!! \Carbon\Carbon::siteClock() !!}</span>
 	</div>
 	<div>Wow one more!</div>
 </div>

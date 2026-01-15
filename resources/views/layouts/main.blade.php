@@ -20,13 +20,7 @@
         @include('layouts.partials.navbar')
         <div class="wrapper">
             <div class="content">
-                <div class="crumbs">
-                    @hasSection('crumbs')
-                        @yield('crumbs')
-                    @else
-                        {{ Breadcrumbs::render('home') }}
-                    @endif
-                </div>
+                @yield('crumbs', Breadcrumbs::render('home'))
                 <div class="alerts"></div>
                 @yield('content')
             </div>

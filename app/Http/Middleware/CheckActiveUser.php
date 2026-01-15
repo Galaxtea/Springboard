@@ -37,10 +37,6 @@ class CheckActiveUser
         view()->share('is_auth', $is_auth);
         view()->share('user', $user);
 
-        view()->share('time', Carbon::siteClock());
-        view()->share('online_count', SiteService::countOnline());
-
-
 
 
 
