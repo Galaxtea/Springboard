@@ -2,46 +2,25 @@
 @section('title') {{ $board->name }} @endsection
 @section('crumbs') {{ Breadcrumbs::render('board', $board) }} @endsection
 @section('content')
-	<h4>{{ $board->name }}</h4>
+	<h2>{{ $board->name }}</h2>
 	@if(count($board->subboards))
-		<h5>Subboards</h5>
-		<div class="row mb-5">
+		<h3>Sub-Boards</h3>
+		<div class="boards">
 			@foreach($board->subboards as $subboard)
-				@include('components.forum_board_card', ['board' => $subboard])
+				<x-forums.board_card :board="$subboard"/>
 			@endforeach
 		</div>
 	@endif
+	<h3>Threads</h3>
 	<div class="btn-row">
 		@if($is_auth && ($board->can_new || $user->perms('forum_boost')))
 			<a href="/forums/{{ $board->slug }}/new" class="btn">Start Thread</a>
 		@endif
 	</div>
-	<h5 class="mb-0">Threads</h5>
 	@foreach($threads as $thread)
 	<!-- Should we hide for both sides of a block???? -->
-		@if(!$is_auth ||!$user->findBlock($thread->poster_id))
-			<div class="thread">
-				<div class="thread-icon">
-					{!! $thread->display_icon !!}
-				</div>
-				<div class="thread-name">
-					@foreach($thread->tags as $tag)
-						{!! $tag->display !!}
-					@endforeach
-					@if($is_auth && $thread->subbedBy($user->id))
-						<i>subbed</i>
-					@endif
-					<a href="/forums/{{ $board->slug }}/{{ $thread->id }}">{{ $thread->name }}</a>
-					<small class="thread-poster">Started by {!! $thread->poster->display_name !!}</small>
-				</div>
-				<small class="thread-posts">
-					{{ $thread->post_counter }}
-				</small>
-				<small class="thread-latest">
-					Latest post by {!! $thread->latest->poster->display_name !!}<br>
-					Posted {!! $thread->latest->posted_at !!}
-				</small>
-			</div>
+		@if(!$is_auth || !$user->findBlock($thread->poster_id))
+			<x-forums.thread_card :$thread/>
 		@endif
 	@endforeach
 	{!! $threads->render() !!}

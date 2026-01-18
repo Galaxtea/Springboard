@@ -3,10 +3,10 @@
 @section('crumbs') {{ Breadcrumbs::render() }} @endsection
 @section('content')
 	@foreach($forums as $forum_cat => $boards)
-		<h4>{{ $forum_cat }}</h4>
-		<div class="row mb-4">
+		<h2>{{ $forum_cat }}</h2>
+		<div class="boards">
 			@foreach($boards as $board)
-				@include('components.forum_board_card')
+				<x-forums.board_card :$board/>
 			@endforeach
 		</div>
 	@endforeach

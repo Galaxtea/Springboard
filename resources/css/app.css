@@ -86,6 +86,65 @@ h1, h2, h3, h4, h5, h6 {
 	font-size: revert;
 	font-weight: revert;
 }
+ 	.boards {
+ 		/*display: flex;*/
+ 		border: 1px solid white;
+ 		margin-bottom: 2em;
+ 	}
+ 	.board-card {
+ 		width: calc(49% - 2em);
+ 		display: inline-flex;
+ 		margin: 1em;
+ 		vertical-align: top;
+ 	}
+ 		.board-card .side {
+ 			flex: 1;
+ 			font-size: 0.8em;
+ 			margin-right: 1em;
+ 		}
+ 			.board-card .side img {
+ 				width: 75%;
+ 			}
+ 		.board-card .info {
+ 			flex: 5;
+ 		}
+ 			.board-card .info .subs {
+ 				font-size: 0.8em;
+ 			}
+.thread {
+	display: flex;
+	border-bottom: 1px solid white;
+	margin-bottom: 1em;
+}
+.thread > * {
+	flex: 1;
+}
+.forum-post {
+	border: 1px solid white;
+	padding: 0.5em;
+	margin-bottom: 2em;
+}
+.forum-post .post-user {
+	display: inline-block;
+	width: 15%;
+	float: left;
+}
+.forum-post .post-text {
+	display: inline-block;
+	width: 85%;
+	float: right;
+}
+.post-top {
+	font-size: 0.8em;
+	margin-bottom: 1em;
+	border-bottom: 1px solid white;
+}
+.post-top .timestamp {
+	float: left;
+}
+.post-top .buttons {
+	float: right;
+}
 
 
 
