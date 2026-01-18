@@ -52,7 +52,7 @@
 		<div class="alert-warning">
 			This thread is locked and cannot be replied to.
 		</div>
-	@elseif($board->can_post || $user->perms('private_forum'))
+	@elseif($board->can_post || $user->perms('forum_boost'))
 		@if($thread->is_locked)
 			<div class="alert-warning">
 				This thread is locked and cannot be replied to by general users. As a message moderator, you can <a href="/forums/manage/{{ $thread->id }}">manage the thread</a> to unlock it.
