@@ -1,6 +1,6 @@
 @props(['post'])
 <a id="post_{{ $post->id }}"/>
-<div class="forum-post clearfix">
+<div class="forum-post clearfix {{ $post->is_deleted ? 'deleted' : '' }}">
 	<div class="post-user">
 		{!! $post->poster->display_avatar !!}
 		<b class="name">{!! $post->poster->display_name !!}</b>
@@ -14,13 +14,13 @@
 			<div class="post-top clearfix">
 				<div class="timestamp">{{ $post->posted_at }}</div>
 				<div class="buttons">
-					@if($is_auth)
+					@if($is_auth && !$post->is_deleted)
 						@if($user->id == $post->poster_id || $user->perms('can_msg_mod'))
 							<a href="/forums/post/{{ $post->id }}/edit">E</a> |
 							<a href="" class="msg-delete" data-id="{{ $post->id }}">X</a> |
 						@endif
 						<a href="/forums/post/{{ $post->id }}/report">!</a> |
-						<a href="">L</a>
+						<a href="#post_{{ $post->id }}">L</a>
 					@endif
 				</div>
 			</div>
