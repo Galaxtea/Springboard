@@ -145,6 +145,9 @@ h1, h2, h3, h4, h5, h6 {
 .post-top .buttons {
 	float: right;
 }
+.deleted {
+	opacity: 0.5;
+}
 
 
 

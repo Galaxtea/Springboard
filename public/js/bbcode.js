@@ -11,3 +11,24 @@ function bbcTag(open_tag, close_tag, text_id) {
 
 	textarea.focus();
 }
+
+
+function previewPost(text_id) {
+	var textarea = document.getElementById(text_id);
+
+	$.ajax({
+		type: 'POST',
+		headers: {'X-CSRF-TOKEN': $('input[name="_token"]')[0].value},
+		url: '/forums/post/preview',
+		data: $("#"+text_id).serialize(),
+		success: function(data) {
+			$('.bbc-preview').html(data);
+		},
+		error: function() {
+			$('.bbc-preview').text("An error occurred trying to preview your post. Please try again or submit a bug report.");
+		},
+		complete: function() {
+			$('.post-preview').removeAttr("style");
+		}
+	});
+}

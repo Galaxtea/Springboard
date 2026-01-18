@@ -1,3 +1,17 @@
+
+<div class="post-preview forum-post clearfix" style="display:none;">
+	<div class="post-user">
+		{!! $user->display_avatar !!}
+		<b class="name">{!! $user->display_name !!}</b>
+	</div>
+	<div class="post-text">
+		<div class="post-top clearfix">
+			<div class="timestamp">Previewing Post</div>
+		</div>
+		<div class="bbc-preview"></div>
+	</div>
+</div>
+
 <div class="bbc-tags">
 	<span name="bold" onclick="bbcTag('[b]','[/b]', '{{ $name }}')"><b>B</b></span> |
 	<span name="italics" onclick="bbcTag('[i]','[/i]', '{{ $name }}')"><i>I</i></span> |
@@ -17,6 +31,8 @@
 {{ html()->textarea($name, $default)->id($name)->class('form-control' . ($errors->has($name) ? ' is-invalid' : null))->rows(7) }}
 @error($name)<br><small class="form-error">{{ $message }}</small>@enderror
 
+
+<span onclick="previewPost('{{ $name }}')">Preview Post</span>
 
 
 @pushOnce('scripts', 'bbcode.js')

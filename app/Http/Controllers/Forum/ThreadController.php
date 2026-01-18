@@ -27,12 +27,17 @@ class ThreadController extends Controller
 	public function getThread($board, $thread_id) {
 		$board = $this->service->getBoard($board);
 
-		if(parent::$is_auth && parent::$user->perms('can_panel')) $thread = $this->service->getThread($thread_id, true);
-		else $thread = $this->service->getThread($thread_id);
+		if(parent::$is_auth && parent::$user->perms('can_panel')) {
+			$thread = $this->service->getThread($thread_id, true);
+			$posts = $thread->posts()->withTrashed();
+		} else {
+			$thread = $this->service->getThread($thread_id);
+			$posts = $thread->posts();
+		}
 
 		if(!$board || !$board->checkPerms(['can_read']) || !$thread) abort(404);
 
-		return view('forums.thread', ['thread' => $thread, 'board' => $board, 'posts' => $thread->posts()->paginate()]);
+		return view('forums.thread', ['thread' => $thread, 'board' => $board, 'posts' => $posts->paginate()]);
 	}
 
 	public function getNew($slug) {

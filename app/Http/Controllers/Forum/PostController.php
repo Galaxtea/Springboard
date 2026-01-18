@@ -8,6 +8,7 @@ use Illuminate\Support\MessageBag;
 use App\Validators\Forum\ThreadValidator;
 use App\Services\Forum\ForumService;
 use App\Services\Forum\ForumPostService;
+use App\Helpers\BBCodeParser as BBCode;
 
 use App\Http\Controllers\Controller;
 class PostController extends Controller
@@ -39,6 +40,10 @@ class PostController extends Controller
 		}
 
 		return redirect()->to('forums/'.$thread->board->slug.'/'.$thread->id)->withInput()->withErrors($errors);
+	}
+
+	public function postPreview(Request $request) {
+		return BBCode::parse($request['content_bbc']);
 	}
 
 
