@@ -19,11 +19,11 @@ class ProfanitySeeder extends Seeder
 	// If you have any regular letters in the sub list, they NEED to be capitalized. i.e. Z, not z, as a sub for s
 	// If you do lowercase instead, it breaks regex-prepping the full words.
 	private $letter_subs = [
-		'/a/' => ['a', 'E', '4', '@', 'á', 'à', 'â', 'ä', 'ã', 'å', 'æ', 'α', 'Δ', 'λ'],
+		'/a/' => ['a', '4', '@', 'á', 'à', 'â', 'ä', 'ã', 'å', 'æ', 'α', 'Δ', 'λ'],
 		'/b/' => ['b', '8', '3', 'ß', 'β'],
 		'/c/' => ['c', 'K', 'S', 'ç', 'ć', 'č', '¢', '€', '<', '(', '{', '©'],
 		'/d/' => ['d', ')', 'þ', 'ð'],
-		'/e/' => ['e', 'U', '3', '€', 'è', 'é', 'ê', 'ë', 'ē', 'ė', 'ę', '∑'],
+		'/e/' => ['e', '3', '€', 'è', 'é', 'ê', 'ë', 'ē', 'ė', 'ę', '∑'],
 		'/f/' => ['f', 'ƒ'],
 		'/g/' => ['g', 'J', '6', '9'],
 		'/h/' => ['h', 'Η'],
@@ -101,9 +101,10 @@ class ProfanitySeeder extends Seeder
 			'gangbang',
 			'dildo',
 			'molest',
-			'pado',
+			'pedo',
 			'smut',
 			'masterba',
+			'masturba',
 			'orgas',
 			'wog',
 			'ejac',
@@ -115,7 +116,7 @@ class ProfanitySeeder extends Seeder
 		],
 	];
 	private $whitelist = [
-		'cockpit', 'grape', 'eject', 'hornet', 'veggie', 'vegetables', 'basement', 'canal', 'analyst', 'analysis', 'analyze', 'skuntank', 'parse', 'vacuum', 'scunthorpe', 'penistone', 'arsenal', 'cocktail', 'cockerel', 'cockatiel'
+		'cockpit', 'grape', 'eject', 'hornet', 'basement', 'canal', 'analyst', 'analysis', 'analyze', 'skuntank', 'parse', 'vacuum', 'scunthorpe', 'penistone', 'arsenal', 'cocktail', 'cockerel', 'cockatiel'
 	];
 
 
@@ -140,6 +141,14 @@ class ProfanitySeeder extends Seeder
 	 */
 	public function run(): void
 	{
+		// Remove existing data for when we're re-seeding an existing DB
+		Blacklist::truncate();
+		Whitelist::truncate();
+		LetterSubs::truncate();
+		Context::truncate();
+		ContextBlock::truncate();
+
+
 		// Letter Subs
 		foreach($this->letter_subs as $letter => $sub) {
 			$sub_list = json_encode($sub);
