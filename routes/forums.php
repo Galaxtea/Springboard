@@ -34,6 +34,8 @@ Route::controller(ForumController::class)->prefix('forums')->group(function () {
 		Route::post('/{thread}/post', 'postNew')->where('thread', '[0-9]+');
 
 		Route::prefix('post')->group(function () {
+			Route::post('/preview', 'postPreview');
+
 			Route::get('/{id}/edit', 'getEdit')->where('id', '[0-9]+');
 			Route::post('/{id}/edit', 'postEdit')->where('id', '[0-9]+');
 

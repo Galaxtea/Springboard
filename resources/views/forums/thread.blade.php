@@ -79,7 +79,7 @@
 	@endif
 @endsection
 @push('scripts')
-	<script type="text/javascript">
+	<script type="module">
 		$('.msg-delete').on('click', function(e) {
 			e.preventDefault();
 			if(confirm("Are you sure you would like to delete this post?")) {
