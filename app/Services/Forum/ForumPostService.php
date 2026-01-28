@@ -23,10 +23,7 @@ class ForumPostService extends Service
 		try {
 			if($thread->is_locked && !parent::$user->perms('can_msg_mod')) throw new Exception("You do not have permission to make posts on locked threads.", 1);
 
-			if(Filter::filter($data['content_bbc'])) {
-				if(Filter::$hit_context) throw new Exception("Please refrain from discussing ".Filter::$hit_context." onsite.");
-				if(Filter::$hit_count >= 5) throw new Exception("Please refrain from excessively swearing onsite.");
-			}
+			Filter::filter($data['content_bbc']);
 			$data['content_html'] = BBCode::parse(Filter::$filtered_content);
 
 			$post = Post::create($data);
@@ -45,14 +42,11 @@ class ForumPostService extends Service
 		\DB::beginTransaction();
 
 		try {
-			if(Filter::filter($data['content_bbc'])) {
-				if(Filter::$hit_context) throw new Exception("Please refrain from discussing ".Filter::$hit_context." onsite.");
-				if(Filter::$hit_count >= 5) throw new Exception("Please refrain from excessively swearing onsite.");
-			}
+			Filter::filter($data['content_bbc']);
 			$data['content_html'] = BBCode::parse(Filter::$filtered_content);
 
 			$edited = [
-				'editor_id' => $data['editor_id'] ? $data['editor_id'] : $post->poster_id,
+				'editor_id' => $post->editor_id ?? $post->poster_id,
 				'post_id' => $post->id,
 				'content_bbc' => $post->content,
 				'content_html' => $post->display_content,

@@ -19,8 +19,8 @@
 							<a href="/forums/post/{{ $post->id }}/edit">E</a> |
 							<a href="" class="msg-delete" data-id="{{ $post->id }}">X</a> |
 						@endif
-						<a href="/forums/post/{{ $post->id }}/report">!</a> |
-						<a href="#post_{{ $post->id }}">L</a>
+						<a href="/report/post/{{ $post->id }}">!</a> |
+						<a href="/forums/post/{{ $post->id }}">L</a>
 					@endif
 				</div>
 			</div>

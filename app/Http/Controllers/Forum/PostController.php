@@ -23,6 +23,20 @@ class PostController extends Controller
 		$this->service = $service;
 	}
 
+	public function locatePost($id) {
+		$post = $this->service->getPost($id);
+		if(!$post) return redirect()->to('/forums');
+
+		// Find the post's thread
+		$posts = $post->thread->posts()->where('id', '<=', $id);
+		if(parent::$is_auth && parent::$user->perms('can_msg_mod')) $posts = $posts->withTrashed();
+
+		// Find which page the post would end up on
+		$found_page = $posts->paginate()->lastPage();
+
+		return redirect()->to("/forums/{$post->board->slug}/{$post->thread_id}?page={$found_page}#post_{$id}");
+	}
+
 	public function postNew(Request $request, ThreadValidator $validator, ForumPostService $service, $id) {
 		$thread = $this->service->getThread($id);
 

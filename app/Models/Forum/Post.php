@@ -56,7 +56,7 @@ class Post extends Model
 			return $this->belongsTo('App\Models\Forum\Thread');
 		}
 		public function board() {
-			return $this->thread->belongsTo('App\Models\Forum\Board', 'orig_board_id');
+			return $this->thread->board();
 		}
 
 

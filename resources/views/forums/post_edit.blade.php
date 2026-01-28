@@ -1,5 +1,6 @@
 @extends('layouts.main')
 @section('title') Edit Post @endsection
+@section('crumbs') {{ Breadcrumbs::render('post_edit', $post->thread) }} @endsection
 @section('content')
 	<h4>Editing {{ $post->poster->username }}'s post on <i>{{ $post->thread->name }}</i></h4>
 	<div class="form-post">

@@ -27,7 +27,7 @@ class ThreadController extends Controller
 	public function getThread($board, $thread_id) {
 		$board = $this->service->getBoard($board);
 
-		if(parent::$is_auth && parent::$user->perms('can_panel')) {
+		if(parent::$is_auth && parent::$user->perms('can_msg_mod')) {
 			$thread = $this->service->getThread($thread_id, true);
 			$posts = $thread->posts()->withTrashed();
 		} else {

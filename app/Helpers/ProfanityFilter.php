@@ -4,13 +4,14 @@ namespace App\Helpers;
 
 use Exception;
 use Cache;
+use Str;
+use Arr;
 
 use App\Models\Site\Wordlist\Blacklist;
 use App\Models\Site\Wordlist\Whitelist;
 use App\Models\Site\Wordlist\LetterSubs;
 use App\Models\Site\Wordlist\Context;
 use App\Models\Site\Wordlist\ContextBlock;
-use App\Models\Site\Wordlist\WordReport;
 
 class ProfanityFilter
 {
@@ -23,7 +24,7 @@ class ProfanityFilter
 	public static $has_hits;
 	public static $hit_count;
 	public static $hit_words;
-	public static $hit_context;
+	public static $hit_contexts;
 	public static $filtered_content;
 
 	// This is the primary use of this Helper
@@ -38,12 +39,10 @@ class ProfanityFilter
 
 	// Private functions as these shouldn't be called anywhere but inside here (i.e. filter function)
 	private static function runChecks(string $content): void {
-		// We want to check for blocked contexts first because it'll be a hard reject
-		// Remember that $hit_context will be populated to check on the other side
-		if(self::checkContexts($content)) return;
+		// Run context checks
+		self::checkContexts($content);
 
 
-		// We didn't hit any blocked contexts, so follow up with the black/whitelists
 		// Get cached blacklists & whitelist. Initiate arrays for matches.
 		$matches = ['white'=>[], 'black'=>[]];
 		$boundary = self::getBlacklist('boundary');
@@ -60,22 +59,19 @@ class ProfanityFilter
 
 
 		// Check for blacklisted content, make sure to do boundary-word checks first
-		$bounding_hits = 0;
 		if($boundary && preg_match_all($boundary, $content, $matches['black']['boundary'])) {
-			$content = preg_replace($boundary, '*****', $content, -1, $bounding_hits);
-			if(!isset(self::$has_hits)) self::$has_hits = true;
+			$content = preg_replace($boundary, '*****', $content, -1);
 		}
-		$substring_hits = 0;
 		if($substring && preg_match_all($substring, $content, $matches['black']['substring'])) {
-			$content = preg_replace($substring, '*****', $content, -1, $substring_hits);
-			if(!isset(self::$has_hits)) self::$has_hits = true;
+			$content = preg_replace($substring, '*****', $content, -1);
 		}
-		self::$hit_words = $matches['black'];
-		self::$hit_count = $bounding_hits + $substring_hits;
+		self::$hit_words = Arr::flatten($matches['black']);
+		self::$hit_count = count(self::$hit_words) + count(self::$hit_contexts);
+		if(self::$hit_count) self::$has_hits ?? true;
 
 
 		// Return whitelisted words to their original place
-		if(!$matches['white'][0] == []) {
+		if($matches['white'][0] != []) {
 			foreach($matches['white'][0] as $match) {
 				$content = preg_replace("/{$safeword}/", $match, $content, 1);
 			}
@@ -98,16 +94,10 @@ class ProfanityFilter
 			$words = Blacklist::where('filter_type', '=', $type)->pluck('subbed')->toArray();
 			if($words == []) return null;
 
-
 			// sub-words get [^\s\[\]]* before and after -- this collects surrounding letters, but breaks w/ ] or [ for bbcode
 			$bounds = $type == 'substring' ? '[^\s\[\]]*' : '';
-			$endings = $type == 'substring' ? '' : '(?:'.implode('|', Blacklist::where('filter_type', '=', 'ending')->pluck('subbed')->toArray()).')*';
 
-
-			$regex = "/\b{$bounds}(?:".implode('|', $words)."){$endings}{$bounds}\b/i";
-			// Also save a list of boundary words but as substring words? So we can get alerts about them and can pre-emptively fill whitelists, and also see if it's something we need to alter the blacklist for
-
-			return $regex;
+			return "/\b{$bounds}(?:".implode('|', $words)."){$bounds}\b/i";
 		});
 	}
 
@@ -128,7 +118,7 @@ class ProfanityFilter
 		});
 	}
 
-	private static function checkContexts($content): bool {
+	private static function checkContexts($content): void {
 		// Prep the content with the context tags
 		$contexts = self::getContexts();
 		$content = preg_replace($contexts['words'], $contexts['keys'], str_replace('<', '&lt;', $content));
@@ -138,15 +128,14 @@ class ProfanityFilter
 		$nicknames = ContextBlock::pluck('nickname')->toArray();
 
 		// It needs to have at least one of EACH to count as the context block
+		$hits = [];
 		foreach($tags as $key => $tag) {
-			if(self::str_contains_all($content, json_decode($tag))) {
-				self::$hit_context = $nicknames[$key];
-				self::$has_hits = true;
-				self::$hit_count = 1;
-				return true; // We hit a blocked context, so no need to keep searching
-			}
+			if(Str::containsAll($content, json_decode($tag))) array_push($hits, $nicknames[$key]);
 		}
-		return false;
+
+		if(!isset(self::$hit_contexts)) self::$hit_contexts = $hits;
+
+		return;
 	}
 
 	private static function getContexts(): array {
@@ -157,11 +146,6 @@ class ProfanityFilter
 			array_push($return['keys'], $data['context']);
 		}
 		return $return;
-	}
-
-	// ---- This function came from the PHP str_contains() doc page
-	private static function str_contains_all(string $haystack, array $needles): bool {
-	    return array_reduce($needles, fn($a, $n) => $a && str_contains($haystack, $n), true);
 	}
 
 
