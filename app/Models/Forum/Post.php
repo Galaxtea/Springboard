@@ -40,6 +40,9 @@ class Post extends Model
 		public function getIsEditedAttribute() {
 			return $this->editor_id ? true : false;
 		}
+		public function getLinkAttribute() {
+			return "/forums/{$this->board->slug}/{$this->thread_id}/post_{$this->id}";
+		}
 
 
 	// Relations

@@ -20,8 +20,8 @@
 							<a href="" class="msg-delete" data-id="{{ $post->id }}">X</a> |
 						@endif
 						<a href="/report/post/{{ $post->id }}">!</a> |
-						<a href="/forums/post/{{ $post->id }}">L</a>
 					@endif
+					<a href="{{ $post->link }}">L</a>
 				</div>
 			</div>
 			{!! $post->display_content !!}

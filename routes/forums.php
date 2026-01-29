@@ -34,9 +34,9 @@ Route::controller(ForumController::class)->prefix('forums')->group(function () {
 	Route::controller(PostController::class)->group(function () {
 		Route::post('/{thread}/post', 'postNew')->whereNumber('thread');
 
-		Route::prefix('post')->group(function () {
-			Route::get('/{id}', 'locatePost')->name('forum_post');
+		Route::get('/{board}/{thread_id}/post_{id}', 'locatePost')->name('forum_post')->whereIn('board', Board::pluck('slug')->toArray())->whereNumber('thread_id');
 
+		Route::prefix('post')->group(function () {
 			Route::post('/preview', 'postPreview');
 
 			Route::get('/{id}/edit', 'getEdit');

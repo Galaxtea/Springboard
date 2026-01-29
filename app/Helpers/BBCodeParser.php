@@ -84,12 +84,12 @@ class BBCodeParser
 		],
 		'link' => [
 			'bbcode' => '/\[url\](https?:\/\/(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:[a-z0-9~_:=&\/\.\#\+\%\-\(\)\?]+)?)\[\/url\]/si',
-			'html' => '<a href="$1">$1</a>',
+			'html' => '<a href="$1" >$1</a>', // The extra space here prevents plain_link from looping back on these two
 			'content' => '$1',
 		],
 		'link_text' => [
 			'bbcode' => '/\[url=(https?:\/\/(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:[a-z0-9~_:=&\/\.\#\+\%\-\(\)\?]+)?)\](.+?)\[\/url\]/si',
-			'html' => '<a href="$1">$2</a>',
+			'html' => '<a href="$1" >$2</a>', // The extra space here prevents plain_link from looping back on these two
 			'content' => '$2',
 		],
 		'subscript' => [
@@ -132,8 +132,16 @@ class BBCodeParser
 			'html' => '<span class="bbc_indent"></span>',
 			'content' => '',
 		],
-		'code' => [ // Keep this at the bottom!
-			'bbcode' => '/\[code\](.+?)\[\/code\](?:\<br\>)?/si',
+
+
+		// These two need to remain at the bottom and in this order, otherwise neither will fully function properly.
+		'plain_link' => [
+			'bbcode' => '/(?<!"|" >)(https?:\/\/(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:[a-z0-9~_:=&\/\.\#\+\%\-\(\)\?]+)?)/i',
+			'html' => '<a href="$1" >$1</a>', // The extra space here prevents this from looping back on itself
+			'content' => '$1',
+		],
+		'code' => [
+			'bbcode' => '/\[code\](.+?)\[\/code\]/si',
 			'html' => '<code>$1</code>',
 			'content' => '$1',
 		],

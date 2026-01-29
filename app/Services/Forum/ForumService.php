@@ -54,7 +54,7 @@ class ForumService extends Service
 	}
 
 	public function getPost($id) {
-		return Post::where('id', $id)->first();
+		return Post::withTrashed()->where('id', $id)->first();
 	}
 
 	public function getLatest($board_id, $count) {

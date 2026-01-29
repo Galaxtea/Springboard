@@ -30,12 +30,11 @@ class CheckActiveUser
     public function handle(Request $request, Closure $next): Response
     {
         $is_auth = Auth::check();
-        $user = $is_auth ? Auth::user() : null;
-        if($user) $user->touchActive();
+		if($user = auth()->user()) $user->touchActive();
+		view()->share('user', $user);
 
 
         view()->share('is_auth', $is_auth);
-        view()->share('user', $user);
 
 
 
