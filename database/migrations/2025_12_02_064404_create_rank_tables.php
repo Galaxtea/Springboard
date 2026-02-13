@@ -41,6 +41,18 @@ return new class extends Migration
 		Schema::table('users', function ($table) {
 			$table->foreign('rank_id')->references('id')->on('ranks');
 		});
+
+		Schema::create('user_upgrades', function (Blueprint $table) {
+			$table->foreignId('user_id');
+			$table->foreignId('rank_id');
+			$table->timestamp('started_at');
+			$table->timestamp('expires_at')->nullable()->default(null);
+			$table->softDeletes();
+
+			$table->primary(['user_id', 'rank_id']);
+			$table->foreign('user_id')->references('id')->on('users');
+			$table->foreign('rank_id')->references('id')->on('ranks');
+		});
 	}
 
 	/**
@@ -48,13 +60,13 @@ return new class extends Migration
 	 */
 	public function down(): void
 	{
-        try {
-            Schema::table('users', function ($table) {
-                $table->dropForeign(['rank_id']);
-            });
-        } catch (Exception $e) {}
-        Schema::dropIfExists('rank_permissions');
-        Schema::dropIfExists('permissions');
-        Schema::dropIfExists('ranks');
+		try {
+			Schema::table('users', function ($table) {
+				$table->dropForeign(['rank_id']);
+			});
+		} catch (Exception $e) {}
+		Schema::dropIfExists('rank_permissions');
+		Schema::dropIfExists('permissions');
+		Schema::dropIfExists('ranks');
 	}
 };
