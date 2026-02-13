@@ -47,6 +47,32 @@
 
 // Users
 	Breadcrumbs::for('profile', function($trail, $username, $id) {
-		$trail->push($username."'s Profile", route('profile', $id));
+		$trail->push("{$username}'s Profile", route('profile', $id));
+		$trail->parent('home');
+	});
+
+
+
+
+// Admin Panel
+	Breadcrumbs::for('admin', function($trail) {
+		$trail->push("Admin Panel", route('admin'));
+	});
+	Breadcrumbs::for('admin.user_list', function($trail) {
+		$trail->push("User List", route('admin.user_list'));
+		$trail->parent('admin');
+	});
+	Breadcrumbs::for('admin.user', function($trail, $username, $id) {
+		$trail->push("Account Info");
+		$trail->push("{$username}", route('admin.user', $id));
+		$trail->parent('admin.user_list');
+	});
+
+
+
+
+// Errors
+	Breadcrumbs::for('errors.404', function($trail) {
+		$trail->push("Page Not Found");
 		$trail->parent('home');
 	});

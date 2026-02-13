@@ -1,9 +1,11 @@
 @extends('layouts.main')
 @section('title') Error 404 @endsection
+@section('crumbs') {{ Breadcrumbs::render('errors.404') }} @endsection
 @section('content')
 	<h3>Whoops! It looks like you took a wrong turn...</h3>
-	@if($exception->getMessage())
-		{{ $exception->getMessage() }}
+	@php $error = $exception->getMessage(); @endphp
+	@if($error && $error != "Not Found")
+		{{ $error }}
 	@else
 		The page you are trying to access doesn't appear to exist.
 	@endif

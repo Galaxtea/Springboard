@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'site_settings';
 		public $timestamps = false;

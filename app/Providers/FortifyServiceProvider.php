@@ -16,6 +16,7 @@ use Laravel\Fortify\Fortify;
 
 use App\Models\User\User;
 use App\Models\Site\Setting;
+use App\Services\Site\SiteSettingService as Settings;
 use Illuminate\Support\Facades\Hash;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -55,8 +56,7 @@ class FortifyServiceProvider extends ServiceProvider
 			return view('auth.login');
 		});
 		Fortify::registerView(function () {
-	        $can_register = Setting::where('ref_key', 'open_reg')->first();
-			return view('auth.register', ['open_reg' => $can_register->value]);
+			return view('auth.register', ['open_reg' => Settings::get('open_reg')->value]);
 		});
 		Fortify::requestPasswordResetLinkView(function () {
 			return view('auth.forgot-password');
@@ -66,13 +66,13 @@ class FortifyServiceProvider extends ServiceProvider
 		});
 
 
-	    Fortify::authenticateUsing(function (Request $request) {
-	        $user = User::where('username', $request->username)->first();
-	 
-	        if ($user &&
-	            Hash::check($request->password, $user->authPassword)) {
-	            return $user;
-	        }
-	    });
+		Fortify::authenticateUsing(function (Request $request) {
+			$user = User::where('username', $request->username)->withOnly('settings:user_id,password')->first();
+
+			if ($user &&
+				Hash::check($request->password, $user->authPassword)) {
+				return $user;
+			}
+		});
 	}
 }
