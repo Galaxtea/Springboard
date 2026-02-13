@@ -23,7 +23,7 @@
 	<span name="justify" onclick="bbcTag('[justify]','[/justify]', '{{ $name }}')">J</span> |
 	<span name="sub" onclick="bbcTag('[sub]','[/sub]', '{{ $name }}')"><sub>sub</sub></span> |
 	<span name="sup" onclick="bbcTag('[sup]','[/sup]', '{{ $name }}')"><sup>sup</sup></span>
-	@if($is_auth && $user->perms('can_msg_mod'))
+	@if($user->perms('can_msg_mod'))
 		| <span name="more" onclick="bbcTag('[more]','', '{{ $name }}')">M</span>
 	@endif
 </div>

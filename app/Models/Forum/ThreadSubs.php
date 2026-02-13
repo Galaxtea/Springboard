@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ThreadSubs extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'forum_thread_subs';
 		public $timestamps = false;

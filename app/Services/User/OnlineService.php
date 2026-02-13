@@ -8,19 +8,29 @@ use App\Services\Service;
 use Carbon\Carbon;
 use App\Models\User\User;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Builder;
 
 class OnlineService extends Service
 {
-	public static function list($with_invis = false) {
-		$query = User::join('user_settings', 'users.id', '=', 'user_settings.user_id')->select('username', 'users.id', 'active_at', 'user_settings.display_active')->where('active_at', '>=', Carbon::now()->subMinutes(15));
+	public static function list($with_invis = false, $page) {
+		return Cache::tags(['online', "invis:{$with_invis}"])->flexible("page_{$page}", [300, 900], function () use ($with_invis) {
+			$query = self::findOnline($with_invis);
 
-		if(!$with_invis) $query->where('user_settings.display_active', '1');
-		return $query->orderBy('active_at', 'DESC');
+			return $query->orderBy('active_at', 'DESC')->paginate();
+		});
 	}
 
 	public static function count() {
-		return Cache::flexible('online_count', [30, 300], function () {
-			return self::list(true)->count();
+		return Cache::tags(['online'])->flexible('count', [30, 300], function () {
+			return self::findOnline(true)->count();
 		});
+	}
+
+	private static function findOnline($with_invis = false) {
+		$query = User::select('username', 'id', 'active_at')->where('active_at', '>=', Carbon::now()->subMinutes(15));
+		if(!$with_invis) $query->whereHas('settings', function (Builder $query) {
+			$query->where('display_active', '1');
+		});
+		return $query;
 	}
 }

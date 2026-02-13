@@ -7,17 +7,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use App\Traits\Reportable;
+
+use App\Models\Admin\IPHistory;
+
 use Carbon;
 
 class User extends Authenticatable
 {
+	// Traits
 	/** @use HasFactory<\Database\Factories\UserFactory> */
-	use HasFactory, Notifiable;
+	use HasFactory, Notifiable, Reportable;
 
 
 	// Model Settings
 		protected $table = 'users';
 		public $timestamps = true;
+		protected $with = ['settings:user_id,reg_step,display_active', 'powers:id,slug'];
 
 		protected $fillable = [
 			'username', 'rank_id', 'pri_curr', 'sec_curr'
@@ -44,14 +50,14 @@ class User extends Authenticatable
 			public function getAuthPasswordAttribute() {
 				return $this->settings->password;
 			}
-            public function perms($key = null) {
-                $perms = $this->powers->keyBy('slug');
-                if($key) $perms = $perms->has($key);
-                return $perms;
-            }
-            public function getPermListAttribute() {
-                return array_keys($this->perms()->toArray());
-            }
+			public function perms($key = null) {
+				$perms = $this->powers->keyBy('slug');
+				if($key) $perms = $perms->has($key);
+				return $perms;
+			}
+			public function getPermListAttribute() {
+				return array_keys($this->perms()->toArray());
+			}
 
 		// Misc
 			public function getDisplayNameAttribute() {
@@ -76,13 +82,13 @@ class User extends Authenticatable
 
 
 	// Relations
-		// Ranks & Perms
-	        public function powers() {
-	            return $this->hasManyThrough(Permissions::class, RankPerms::class, 'rank_id',  'id',  'rank_id',  'permission_id');
-	        }
-	        public function rank() {
-	            return $this->belongsTo(Rank::class);
-	        }
+		// IMPORTANT
+			public function powers() {
+				return $this->hasManyThrough(Permissions::class, RankPerms::class, 'rank_id',  'id',  'rank_id',  'permission_id');
+			}
+			public function rank() {
+				return $this->belongsTo(Rank::class);
+			}
 
 		// General
 			public function settings() {
@@ -130,11 +136,11 @@ class User extends Authenticatable
 
 
 	// Functions
-		public function seen($bypass = false) {
+		public function seen($user = null) {
 			// Check if their activity is enabled, or if the viewer has perms to see anyways (i.e. Admin)
 			// or if they've even been online at all since signing up
 			$visible = $this->settings->display_active;
-			if((!$visible && !$bypass) || ($this->active_at === null)) return 'Offline';
+			if((!$visible && $user?->id != $this->id && !$user?->perms('can_reports')) || ($this->active_at === null)) return 'Offline';
 
 			// Get their active time and check with the current time (Carbon gets the current time automatically)
 			$time = $this->active_at;
@@ -149,10 +155,15 @@ class User extends Authenticatable
 			return $seen . (!$visible ? ' (invisible)' : '');
 		}
 
-		public function touchActive() {
+		public function touchActive($ip) {
 			// Quickly update the user's last seen timestamp :)
 			$this->active_at = Carbon\Carbon::now();
 			$this->save();
+			IPHistory::upsert([
+				'user_id' => $this->id,
+				'ip_address' => $ip,
+				'updated_at' => Carbon\Carbon::now()
+			], uniqueBy: ['user_id', 'ip_address'], update: ['updated_at']);
 			return;
 		}
 }

@@ -6,10 +6,15 @@ use Config;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Traits\Reportable;
+
 class Post extends Model
 {
+	// Traits
+		use SoftDeletes, Reportable;
+
+
 	// Model Settings
-		use SoftDeletes;
 		protected $table = 'forum_posts';
 		protected $perPage = 20;
 

@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class BlockedUsers extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'user_blocks';
 		public $timestamps = false;
+		protected $with = ['blockedBy', 'isBlocking'];
 
 		protected $fillable = [
 			'blocked_id', 'self_note',

@@ -21,13 +21,15 @@ class ForumPostService extends Service
 		\DB::beginTransaction();
 
 		try {
-			if($thread->is_locked && !parent::$user->perms('can_msg_mod')) throw new Exception("You do not have permission to make posts on locked threads.", 1);
+			if($thread->is_locked && !auth()->user()?->perms('can_msg_mod')) throw new Exception("You do not have permission to make posts on locked threads.", 1);
 
 			Filter::filter($data['content_bbc']);
+			if(Filter::$prevent) throw new Exception("Your post has been refused due to content violations.", 1);
 			$data['content_html'] = BBCode::parse(Filter::$filtered_content);
 
 			$post = Post::create($data);
 			if(!(new ThreadService)->touch($thread, 'add', $post)) throw new Exception("Error Processing Request", 1);
+
 
 			return $this->commitReturn($post);
 		} catch (Exception $e) {
@@ -43,6 +45,7 @@ class ForumPostService extends Service
 
 		try {
 			Filter::filter($data['content_bbc']);
+			if(Filter::$prevent) throw new Exception("Your post has been refused due to content violations.", 1);
 			$data['content_html'] = BBCode::parse(Filter::$filtered_content);
 
 			$edited = [

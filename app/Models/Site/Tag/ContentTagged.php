@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContentTagged extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'content_tagged';
 		public $timestamps = false;
+		protected $with = ['tag'];
 
 		protected $fillable = [
 			'content_type', 'content_id', 'tag_id'

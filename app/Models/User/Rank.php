@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Rank extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'ranks';
 		public $timestamps = false;

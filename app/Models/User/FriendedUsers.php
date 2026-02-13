@@ -6,10 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class FriendedUsers extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'user_friends';
 		public $timestamps = false;
 		public $primaryKey = 'friend_id';
+		protected $with = ['isFriended', 'isRequesting'];
 
 		protected $fillable = [
 			'friend_id', 'friended_id', 'status'

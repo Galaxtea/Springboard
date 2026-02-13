@@ -3,13 +3,14 @@
 @section('crumbs') {{ Breadcrumbs::render('profile', $profile->username, $profile->id) }} @endsection
 @section('content')
 	<h1>Viewing {{ $profile->username }}'s Profile</h1>
-	@if($is_auth && ($is_blocked = $profile->findBlock($user->id)) && !$user->perms('block_bypass'))
+	@if($user && ($is_blocked = $profile->findBlock($user->id)) && !$user->perms('block_bypass'))
 		{{ $profile->username }} has blocked you :c
 	@else
-		{{ $profile->seen($is_auth ? $user->perms('can_reports') : false) }}
+		{{ $profile->seen($user) }}
 	@endif
 <br><br><br>
-	@if($is_auth && $profile->id != $user->id)
+	@if($user && $profile->id != $user->id)
+		Put a report button here
 		@if($block = $user->findBlock($profile->id))
 			{{ html()->form('POST', '/unblock/'.$profile->id)->open() }}
 			{{ html()->submit('Unblock User') }}

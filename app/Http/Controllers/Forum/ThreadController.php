@@ -27,7 +27,7 @@ class ThreadController extends Controller
 	public function getThread($board, $thread_id) {
 		$board = $this->service->getBoard($board);
 
-		if(parent::$is_auth && parent::$user->perms('can_msg_mod')) {
+		if(auth()->user()?->perms('can_msg_mod')) {
 			$thread = $this->service->getThread($thread_id, true);
 			$posts = $thread->posts()->withTrashed();
 		} else {
@@ -52,12 +52,12 @@ class ThreadController extends Controller
 	public function postNew(Request $request, ThreadValidator $validator, ForumThreadService $service, $slug) {
 		$board = $this->service->getBoard($slug);
 
-		if(!parent::$is_auth || !$board || !$board->checkPerms(['can_read', 'can_new'])) return redirect()->to('/forums/'.$slug);
+		if(!auth()->user() || !$board || !$board->checkPerms(['can_read', 'can_new'])) return redirect()->to('/forums/'.$slug);
 
 		$errors = new MessageBag();
 
-		$extra = ['is_sticky' => $request->has('is_sticky'), 'is_locked' => $request->has('is_locked'), 'tags' => $request->has('tags') ? $request['tags'] : null, 'board_id' => $board->id, 'poster_id' => parent::$user->id];
-		if(!parent::$user->perms('can_msg_mod')) {
+		$extra = ['is_sticky' => $request->has('is_sticky'), 'is_locked' => $request->has('is_locked'), 'tags' => $request->has('tags') ? $request['tags'] : null, 'board_id' => $board->id, 'poster_id' => auth()->user()?->id];
+		if(!auth()->user()?->perms('can_msg_mod')) {
 			$extra['is_sticky'] = 0;
 			$extra['is_locked'] = 0;
 		}
@@ -166,22 +166,22 @@ class ThreadController extends Controller
 
 
 	public function addSub(ForumThreadService $service, $thread_id) {
-		if(!parent::$is_auth) return abort(404, 'You need to be logged in to do that.');
+		if(!auth()->user()) return abort(404, 'You need to be logged in to do that.');
 		$thread = $this->service->getThread($thread_id);
 		if(!$thread) return back();
 
-		$subbed = $thread->subList()->where('user_id', parent::$user->id)->first();
+		$subbed = $thread->subList()->where('user_id', auth()->user()?->id)->first();
 
-		if(!$subbed) $service->addSub($thread, parent::$user->id);
+		if(!$subbed) $service->addSub($thread, auth()->user()?->id);
 
 		return back();
 	}
 	public function removeSub(ForumThreadService $service, $thread_id) {
-		if(!parent::$is_auth) return abort(404, 'You need to be logged in to do that.');
+		if(!auth()->user()) return abort(404, 'You need to be logged in to do that.');
 		$thread = $this->service->getThread($thread_id);
 		if(!$thread) return back();
 
-		$subbed = $thread->subList()->where('user_id', parent::$user->id);
+		$subbed = $thread->subList()->where('user_id', auth()->user()?->id);
 
 		if($subbed) $service->removeSub($subbed);
 
