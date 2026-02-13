@@ -3,13 +3,25 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+
 use Illuminate\Validation\Rules\Password;
 
-use App\Helpers\HtmlExtended;
-use Spatie\Html\Html;
 use Carbon\Carbon;
 use Config;
+
 use Route;
+
+use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Gate;
+use App\Models\User\User;
+
+// Come back to these...
+// use Limit;
+// use RateLimiter;
+// use Request;
+
+use Spatie\Html\Html;
+use App\Helpers\HtmlExtended;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,5 +51,11 @@ class AppServiceProvider extends ServiceProvider
 		});
 
 		Route::pattern('id', '[0-9]+');
+
+
+		// Access Gates
+			Gate::define('can-panel', function (User $user) {
+				return $user->perms('can_panel') ? Response::allow() : Response::denyAsNotFound();
+			});
 	}
 }
