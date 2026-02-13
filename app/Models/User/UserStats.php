@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserStats extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'user_stats';
 		public $timestamps = false;

@@ -8,9 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Board extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'forum_boards';
 		public $timestamps = false;
+		protected $with = ['parent'];
 
 		protected $fillable = [
 			'name', 'slug', 'description', 'category', 'parent_board', 'thread_count',
@@ -55,7 +59,9 @@ class Board extends Model
 		}
 		public function threads() {
 			$threads = $this->hasManyThrough('App\Models\Forum\Thread', 'App\Models\Forum\BoardThreads', 'board_id', 'id', 'id', 'thread_id')->orderBy('is_sticky', 'DESC');
-			if($this->id !== 2) $threads->orderBy('updated_at', 'DESC');
+
+			if($this->id == 2) $threads->orderBy('id', 'DESC'); // We're looking at Announcements, so we want plain chronologically.
+			else $threads->orderBy('last_post_id', 'DESC'); // We're anywhere else, so we want recent activity.
 
 			return $threads->with('tags');
 		}

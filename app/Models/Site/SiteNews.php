@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class SiteNews extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'site_news';
 		public $timestamps = false;
 		public $primaryKey = 'thread_id';
-		public $perPage = 5;
+		protected $perPage = 5;
 
 		protected $fillable = [
 			'thread_id', 'content_html',

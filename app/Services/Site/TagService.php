@@ -16,7 +16,7 @@ class TagService extends Service
 	}
 
 	public function getTagsByType(array $type) {
-		$query = ContentTag::usable(parent::$user)->where('type', 'like', "%{$type[0]}%");
+		$query = ContentTag::usable(auth()->user())->where('type', 'like', "%{$type[0]}%");
 		if(($count = count($type)) > 1) {
 			for($i = 1; $i < $count; $i++) {
 				$query->orWhere('type', 'like', "%{$type[$i]}%");

@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContentTag extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'content_tags';
 		public $timestamps = false;

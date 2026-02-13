@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class RegCode extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'reg_codes';
 		public $timestamps = true;

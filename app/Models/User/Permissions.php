@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Permissions extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'permissions';
 		public $timestamps = false;

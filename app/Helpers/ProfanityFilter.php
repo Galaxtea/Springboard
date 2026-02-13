@@ -4,83 +4,69 @@ namespace App\Helpers;
 
 use Exception;
 use Cache;
+use Str;
+use Arr;
 
-use App\Models\Site\Wordlist\Blacklist;
-use App\Models\Site\Wordlist\Whitelist;
+use App\Models\Site\Wordlist\FilterList;
 use App\Models\Site\Wordlist\LetterSubs;
-use App\Models\Site\Wordlist\Context;
-use App\Models\Site\Wordlist\ContextBlock;
-use App\Models\Site\Wordlist\WordReport;
+use App\Models\Site\Wordlist\Contexts;
+use App\Models\Site\Wordlist\ContextBlocks;
 
 class ProfanityFilter
 {
-	// Check for context typing (selling/buying products)
-	// Return response depending on $handle_hit value (reject, redact, allow)
-		// Submit hit report for review (except phrase/word boundary blacklisted ones cuz those shouldn't catch strays anyways)
-
-
 	public static $populated;
-	public static $has_hits;
-	public static $hit_count;
-	public static $hit_words;
-	public static $hit_context;
+	public static $report;
+	public static $prevent;
+	public static $stashed_hits;
 	public static $filtered_content;
 
 	// This is the primary use of this Helper
-	public static function filter(string $content): null|bool {
+	public static function filter(string $content): void {
 		if(!isset(self::$populated)) {
 			self::$populated = true;
 			self::runChecks($content);
 		}
-		return self::$has_hits;
+		return;
 	}
 
 
 	// Private functions as these shouldn't be called anywhere but inside here (i.e. filter function)
 	private static function runChecks(string $content): void {
-		// We want to check for blocked contexts first because it'll be a hard reject
-		// Remember that $hit_context will be populated to check on the other side
-		if(self::checkContexts($content)) return;
-
-
-		// We didn't hit any blocked contexts, so follow up with the black/whitelists
-		// Get cached blacklists & whitelist. Initiate arrays for matches.
-		$matches = ['white'=>[], 'black'=>[]];
-		$boundary = self::getBlacklist('boundary');
-		$substring = self::getBlacklist('substring');
-		$whitelist = self::getWhitelist();
+		// Run context checks before anything gets changed
+		self::checkContexts($content);
 
 
 		// Strip whitelisted words
+		$saved_words = [];
+		$whitelist = self::getWhitelist();
 		// Safeword is like this to make it VERY hard for someone to accidentally produce a "fake" whitelist spot and mess up their returned content
-		$safeword = preg_quote('$4f3'.time().'W0Rd');
-		if($whitelist && preg_match_all($whitelist, $content, $matches['white'])) {
+		$safeword = preg_quote(' $4f3'.time().'W0Rd ');
+		if($whitelist && preg_match_all($whitelist, $content, $saved_words)) {
 			$content = preg_replace($whitelist, $safeword, $content);
 		}
 
 
-		// Check for blacklisted content, make sure to do boundary-word checks first
-		$bounding_hits = 0;
-		if($boundary && preg_match_all($boundary, $content, $matches['black']['boundary'])) {
-			$content = preg_replace($boundary, '*****', $content, -1, $bounding_hits);
-			if(!isset(self::$has_hits)) self::$has_hits = true;
+		$stashed_hits = [];
+		if($boundary = self::getBlacklist('boundary')) {
+			$checked = self::checkForHits($content, $boundary);
+			if($checked[1]) $stashed_hits[] = $checked[1];
+			$content = $checked[0];
 		}
-		$substring_hits = 0;
-		if($substring && preg_match_all($substring, $content, $matches['black']['substring'])) {
-			$content = preg_replace($substring, '*****', $content, -1, $substring_hits);
-			if(!isset(self::$has_hits)) self::$has_hits = true;
+
+		if($substring = self::getBlacklist('substring')) {
+			$checked = self::checkForHits($content, $substring, true);
+			if($checked[1]) $stashed_hits[] = $checked[1];
+			$content = $checked[0];
 		}
-		self::$hit_words = $matches['black'];
-		self::$hit_count = $bounding_hits + $substring_hits;
+		self::$stashed_hits = Arr::join($stashed_hits, ', '); // These are being sent through the word report.
 
 
 		// Return whitelisted words to their original place
-		if(!$matches['white'][0] == []) {
-			foreach($matches['white'][0] as $match) {
+		if(($whites = $saved_words[0]) != []) {
+			foreach($whites as $match) {
 				$content = preg_replace("/{$safeword}/", $match, $content, 1);
 			}
 		}
-
 
 		// We've now filtered the main content, so stash it
 		self::$filtered_content = $content;
@@ -90,24 +76,40 @@ class ProfanityFilter
 	}
 
 
-	// Helper functions for this file.
-	private static function getBlacklist(string $type): string {
-		// Timing: min 86400 (1 day) max 172800 (2 days)
-		// return Cache::flexible('blacklist_'.$type, [86400, 172800], function () {
-		return Cache::flexible('blacklist_'.$type, [10, 30], function () use ($type) {
-			$words = Blacklist::where('filter_type', '=', $type)->pluck('subbed')->toArray();
-			if($words == []) return null;
 
+	// Helper functions for this file.
+	private static function checkForHits(string $content, array $lists, bool $stash = false): array {
+		$hit_strings = [];
+		foreach($lists as $hit_level => $regex) {
+			if(preg_match_all($regex, $content, $hits)) {
+				if($stash) {
+					if($hits[0] != []) $hit_strings[$hit_level] = Arr::join($hits[0], ', ');
+				}
+				if($hit_level & 1) $content = preg_replace($regex, '*****', $content, -1);
+				if($hit_level & 2 && !isset(self::$report)) self::$report = true;
+				if($hit_level & 4 && !isset(self::$prevent)) self::$prevent = true;
+			}
+		}
+		if($hit_strings == []) $hit_strings = null;
+		else $hit_strings = Arr::join($hit_strings, ', ');
+		return [$content, $hit_strings];
+	}
+
+
+	private static function getBlacklist(string $type): array {
+		return Cache::tags(['profanity'])->rememberForever("{$type}", function () use ($type) {
+			$words = FilterList::where('filter_type', '=', $type)->select(['regex', 'handle_hit'])->get()->groupBy('handle_hit')->toArray();
+			if($words == []) return null;
 
 			// sub-words get [^\s\[\]]* before and after -- this collects surrounding letters, but breaks w/ ] or [ for bbcode
 			$bounds = $type == 'substring' ? '[^\s\[\]]*' : '';
-			$endings = $type == 'substring' ? '' : '(?:'.implode('|', Blacklist::where('filter_type', '=', 'ending')->pluck('subbed')->toArray()).')*';
 
+			foreach($words as $level => $data) {
+				$regexes = Arr::pluck($data, 'regex');
+				$words[$level] = "/\b{$bounds}(?:".implode('|', $regexes)."){$bounds}\b/i";
+			}
 
-			$regex = "/\b{$bounds}(?:".implode('|', $words)."){$endings}{$bounds}\b/i";
-			// Also save a list of boundary words but as substring words? So we can get alerts about them and can pre-emptively fill whitelists, and also see if it's something we need to alter the blacklist for
-
-			return $regex;
+			return $words;
 		});
 	}
 
@@ -115,53 +117,38 @@ class ProfanityFilter
 		// Timing: min 86400 (1 day) max 172800 (2 days)
 		// return Cache::flexible('blacklist_'.$type, [86400, 172800], function () {
 		return Cache::flexible('whitelist', [10, 30], function () {
-			$words = Whitelist::pluck('word')->toArray();
+			$words = FilterList::where('filter_type', '=', 'whitelist')->pluck('regex')->toArray();
 			if($words == []) return null;
-
-			$endings = '(?:'.implode('|', Blacklist::where('filter_type', '=', 'ending')->pluck('subbed')->toArray()).')*';
 
 			// Whitelisted words should always be as boundary-words.
 			// Otherwise users could find whitelisted words to "protect" their blacklisted word usage.
-			$regex = '/\b(?:'.implode('|', $words).')'.$endings.'\b/i';
+			$regex = '/\b(?:'.implode('|', $words).')\b/i';
 
 			return $regex;
 		});
 	}
 
-	private static function checkContexts($content): bool {
+	private static function checkContexts(string $content): void {
 		// Prep the content with the context tags
-		$contexts = self::getContexts();
-		$content = preg_replace($contexts['words'], $contexts['keys'], str_replace('<', '&lt;', $content));
+		$contexts = Cache::tags(['profanity'])->rememberForever("context", function () {
+			return Contexts::get()->toArray();
+		});
+		$content = preg_replace(Arr::pluck($contexts, 'regex'), Arr::pluck($contexts, 'context'), str_replace('<', '&lt;', $content));
 
 		// Build the blocklist for contexts here
-		$tags = ContextBlock::pluck('contexts')->toArray();
-		$nicknames = ContextBlock::pluck('nickname')->toArray();
+		$blocks = ContextBlocks::select(['nickname', 'contexts', 'handle_hit'])->get()->toArray();
 
-		// It needs to have at least one of EACH to count as the context block
-		foreach($tags as $key => $tag) {
-			if(self::str_contains_all($content, json_decode($tag))) {
-				self::$hit_context = $nicknames[$key];
-				self::$has_hits = true;
-				self::$hit_count = 1;
-				return true; // We hit a blocked context, so no need to keep searching
+		foreach($blocks as $block) {
+			$tags = json_decode($block['contexts']);
+			$hit_level = $block['handle_hit'];
+			if(Str::containsAll($content, $tags)) {
+				// if($hit_level & 1) // Trying to filter out context hits is going to be kind of difficult, so come back to this. Reporting/Preventing are the big ones atm.
+				if($hit_level & 2 && !isset(self::$report)) self::$report = true;
+				if($hit_level & 4 && !isset(self::$prevent)) self::$prevent = true;
 			}
 		}
-		return false;
-	}
 
-	private static function getContexts(): array {
-		$contexts = Context::get()->toArray();
-		$return = ['words'=>[], 'keys'=>[]];
-		foreach($contexts as $data) {
-			array_push($return['words'], $data['subbed']);
-			array_push($return['keys'], $data['context']);
-		}
-		return $return;
-	}
-
-	// ---- This function came from the PHP str_contains() doc page
-	private static function str_contains_all(string $haystack, array $needles): bool {
-	    return array_reduce($needles, fn($a, $n) => $a && str_contains($haystack, $n), true);
+		return;
 	}
 
 

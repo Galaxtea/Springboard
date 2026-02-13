@@ -5,7 +5,7 @@
 		{!! $post->poster->display_avatar !!}
 		<b class="name">{!! $post->poster->display_name !!}</b>
 	</div>
-	@if($is_auth && ($user->isBlocked($post->poster_id) || $user->findBlock($post->poster_id)) && !$user->perms('block_bypass'))
+	@if($user && ($user->isBlocked($post->poster_id) || $user->findBlock($post->poster_id)) && !$user->perms('block_bypass'))
 	<div class="post-text">
 		Blocked message.
 	</div>
@@ -14,21 +14,21 @@
 			<div class="post-top clearfix">
 				<div class="timestamp">{{ $post->posted_at }}</div>
 				<div class="buttons">
-					@if($is_auth && !$post->is_deleted)
+					@if($user && !$post->is_deleted)
 						@if($user->id == $post->poster_id || $user->perms('can_msg_mod'))
 							<a href="/forums/post/{{ $post->id }}/edit">E</a> |
 							<a href="" class="msg-delete" data-id="{{ $post->id }}">X</a> |
 						@endif
-						<a href="/forums/post/{{ $post->id }}/report">!</a> |
-						<a href="#post_{{ $post->id }}">L</a>
+						<a href="/report/post/{{ $post->id }}">!</a> |
 					@endif
+					<a href="{{ $post->link }}">L</a>
 				</div>
 			</div>
 			{!! $post->display_content !!}
 			@if($post->is_edited)
 				<div class="post-bottom">
 					Edited by {!! $post->editor->display_name !!} on {{ $post->edited_at }}
-					@if($is_auth && $user->perms('can_msg_mod'))
+					@if($user && $user->perms('can_msg_mod'))
 						| <a href="/forums/post/{{ $post->id }}/history">Edit History</a>
 					@endif
 				</div>

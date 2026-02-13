@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserReferrals extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'user_referrals';
 		public $timestamps = false;

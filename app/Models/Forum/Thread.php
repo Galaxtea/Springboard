@@ -8,10 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Thread extends Model
 {
-	// Model Settings
+	// Traits
 		use SoftDeletes;
+
+
+	// Model Settings
 		protected $table = 'forum_threads';
 		protected $perPage = 25;
+		protected $with = ['poster', 'tags', 'subList', 'latest'];
 
 		protected $fillable = [
 			'name', 'board_id', 'poster_id', 'orig_board_id',
@@ -66,7 +70,7 @@ class Thread extends Model
 			return $this->belongsTo('App\Models\User\User');
 		}
 		public function first() {
-			return $this->hasOne('App\Models\Forum\Post', 'id', 'first_post_id');
+			return $this->posts()->one()->oldestOfMany();
 		}
 		public function board() {
 			return $this->belongsTo('App\Models\Forum\Board', 'orig_board_id');
@@ -78,7 +82,7 @@ class Thread extends Model
 			return $this->hasMany('App\Models\Forum\Post');
 		}
 		public function latest() {
-			return $this->hasOne('App\Models\Forum\Post', 'id', 'last_post_id');
+			return $this->posts()->one()->latestOfMany();
 		}
 
 		public function tags() {

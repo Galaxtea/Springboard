@@ -6,10 +6,15 @@ use Config;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use App\Traits\Reportable;
+
 class Post extends Model
 {
+	// Traits
+		use SoftDeletes, Reportable;
+
+
 	// Model Settings
-		use SoftDeletes;
 		protected $table = 'forum_posts';
 		protected $perPage = 20;
 
@@ -40,6 +45,9 @@ class Post extends Model
 		public function getIsEditedAttribute() {
 			return $this->editor_id ? true : false;
 		}
+		public function getLinkAttribute() {
+			return "/forums/{$this->board->slug}/{$this->thread_id}/post_{$this->id}";
+		}
 
 
 	// Relations
@@ -56,7 +64,7 @@ class Post extends Model
 			return $this->belongsTo('App\Models\Forum\Thread');
 		}
 		public function board() {
-			return $this->thread->belongsTo('App\Models\Forum\Board', 'orig_board_id');
+			return $this->thread->board();
 		}
 
 

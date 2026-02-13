@@ -1,7 +1,7 @@
 @inject('onlines', 'App\Services\User\OnlineService')
 <div class="sidebar">
 	<div>
-		@if($is_auth)
+		@if($user)
 			Welcome back, {!! $user->display_name !!}!<br>
 			{{ $user->pri_curr }} {{ $currencies->primary_name }}<br>
 			{{ $user->sec_curr }} {{ $currencies->secondary_name }}<br>

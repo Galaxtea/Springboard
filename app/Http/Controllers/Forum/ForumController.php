@@ -22,7 +22,6 @@ class ForumController extends Controller
 
 	public function index() {
 		$data = ['parent_board' => null];
-		if(parent::$is_auth) $data['user'] = parent::$user;
 		$forums = $this->service->getForums($data)->groupBy('cat_name');
 
 		return view('forums.index', ['forums' => $forums]);

@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class RankPerms extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'rank_permissions';
 		public $timestamps = false;

@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Forum extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'forums';
 		public $timestamps = false;
+		protected $with = ['boards', 'boards.subboards'];
 
 		protected $fillable = [
 			'name', 'description', 'sort',

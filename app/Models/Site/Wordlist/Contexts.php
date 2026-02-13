@@ -4,14 +4,17 @@ namespace App\Models\Site\Wordlist;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Blacklist extends Model
+class Contexts extends Model
 {
+	// Traits
+
+
 	// Model Settings
-		protected $table = 'word_blacklist';
+		protected $table = 'word_contexts';
 		public $timestamps = false;
 
 		protected $fillable = [
-			'word', 'filter_type', 'subbed'
+			'context', 'words', 'subbed'
 		];
 
 

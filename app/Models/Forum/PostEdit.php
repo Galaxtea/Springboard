@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class PostEdit extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'forum_post_edits';
 		public $timestamps = false;

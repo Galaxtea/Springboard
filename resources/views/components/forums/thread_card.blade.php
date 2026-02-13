@@ -7,7 +7,7 @@
 		@foreach($thread->tags as $tag)
 			{!! $tag->display !!}
 		@endforeach
-		@if($is_auth && $thread->subbedBy($user->id))
+		@if($user && $thread->subbedBy($user->id))
 			<i>subbed</i>
 		@endif
 		<a href="/forums/{{ $board->slug }}/{{ $thread->id }}">{{ $thread->name }}</a>

@@ -4,8 +4,14 @@ namespace App\Models\User;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\Commentable;
+
 class UserProfile extends Model
 {
+	// Traits
+		use Commentable;
+
+
 	// Model Settings
 		protected $table = 'user_profiles';
 		public $timestamps = false;

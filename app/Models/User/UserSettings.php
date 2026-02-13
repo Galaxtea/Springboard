@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserSettings extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'user_settings';
 		public $timestamps = false;
@@ -24,6 +27,7 @@ class UserSettings extends Model
 			return [
 				'email_verified_at' => 'datetime',
 				'password' => 'hashed',
+				'birthday' => 'date',
 			];
 		}
 

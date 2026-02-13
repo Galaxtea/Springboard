@@ -16,14 +16,14 @@ class ForumService extends Service
 		$boards = Board::select('*', 'forum_boards.id as id', 'forum_boards.name as name', 'forum_boards.description as description', 'forums.name as cat_name');
 
 		if(array_key_exists('parent_board', $data)) $boards->where('parent_board', $data['parent_board']);
-		if(!array_key_exists('user', $data)) $boards->where('is_public', 1);
+		if(!auth()->user()) $boards->where('is_public', 1);
 		else {
-			if(!$data['user']->perms('can_reports')) { // Use this section if there's any boards locked off by an account setting, so that staff still see
+			if(!auth()->user()?->perms('can_reports')) { // Use this section if there's any boards locked off by an account setting, so that staff still see
 				// $boards->where(function($query) use ($data) {
-				// 	$query->where('clan_id', $data['user']->clan_id)->orWhereNull('clan_id');
+				// 	$query->where('clan_id', auth()->user()?->clan_id)->orWhereNull('clan_id');
 				// });
 			}
-			if(!$data['user']->perms('forum_boost')) {
+			if(!auth()->user()?->perms('forum_boost')) {
 				$boards->where('can_read', 1);
 			}
 		}
@@ -54,7 +54,7 @@ class ForumService extends Service
 	}
 
 	public function getPost($id) {
-		return Post::where('id', $id)->first();
+		return Post::withTrashed()->where('id', $id)->first();
 	}
 
 	public function getLatest($board_id, $count) {

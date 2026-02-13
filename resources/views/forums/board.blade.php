@@ -13,13 +13,13 @@
 	@endif
 	<h3>Threads</h3>
 	<div class="btn-row">
-		@if($is_auth && ($board->can_new || $user->perms('forum_boost')))
+		@if($user && ($board->can_new || $user->perms('forum_boost')))
 			<a href="/forums/{{ $board->slug }}/new" class="btn">Start Thread</a>
 		@endif
 	</div>
 	@foreach($threads as $thread)
 	<!-- Should we hide for both sides of a block???? -->
-		@if(!$is_auth || !$user->findBlock($thread->poster_id))
+		@if(!$user || !$user->findBlock($thread->poster_id))
 			<x-forums.thread_card :$thread/>
 		@endif
 	@endforeach

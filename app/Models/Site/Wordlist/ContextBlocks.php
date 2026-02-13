@@ -4,14 +4,17 @@ namespace App\Models\Site\Wordlist;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WordReport extends Model
+class ContextBlocks extends Model
 {
+	// Traits
+
+
 	// Model Settings
-		protected $table = 'word_report';
-		public $timestamps = true;
+		protected $table = 'word_context_blocks';
+		public $timestamps = false;
 
 		protected $fillable = [
-			'hit_content', 'hit_as', 'source', 'review_status'
+			'nickname', 'contexts', 'handle_hit'
 		];
 
 

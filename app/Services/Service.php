@@ -5,9 +5,7 @@ namespace App\Services;
 use App;
 use Illuminate\Support\MessageBag;
 
-
-use App\Helpers\AuthShare;
-abstract class Service extends AuthShare {
+abstract class Service {
 	/*
 	|--------------------------------------------------------------------------
 	| Base Service
@@ -17,7 +15,6 @@ abstract class Service extends AuthShare {
 	|
 	*/
 	public function __construct() {
-		parent::__construct();
 		$this->resetErrors();
 	}
 

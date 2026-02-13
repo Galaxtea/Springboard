@@ -10,7 +10,7 @@
 			@endif
 		</div>
 	@endif
-	@if($is_auth)
+	@if($user)
 		<div class="btn-row">
 			@if($user->perms('can_msg_mod'))
 				<a href="/forums/manage/{{ $thread->id }}" class="btn">Manage Thread</a>
@@ -37,7 +37,7 @@
 	@endforeach
 	{!! $posts->render() !!}
 
-	@if(!$is_auth)
+	@if(!$user)
 		<div class="alert-warning">
 			You must <a href="/login">Log In</a> or <a href="/register">Sign Up</a> before you can post on the forums.
 		</div>

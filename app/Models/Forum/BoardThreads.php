@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class BoardThreads extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'forum_board_threads';
 		public $timestamps = false;

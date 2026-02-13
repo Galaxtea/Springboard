@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class LetterSubs extends Model
 {
+	// Traits
+
+
 	// Model Settings
 		protected $table = 'word_letter_subs';
 		public $timestamps = false;
