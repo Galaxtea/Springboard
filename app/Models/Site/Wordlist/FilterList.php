@@ -4,14 +4,17 @@ namespace App\Models\Site\Wordlist;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Whitelist extends Model
+class FilterList extends Model
 {
+	// Traits
+
+
 	// Model Settings
-		protected $table = 'word_whitelist';
+		protected $table = 'word_lists';
 		public $timestamps = false;
 
 		protected $fillable = [
-			'word'
+			'word', 'filter_type', 'regex', 'handle_hit', 'endings'
 		];
 
 

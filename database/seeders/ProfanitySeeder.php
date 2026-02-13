@@ -5,12 +5,12 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+use Illuminate\Support\Arr;
 
-use App\Models\Site\Wordlist\Blacklist;
-use App\Models\Site\Wordlist\Whitelist;
+use App\Models\Site\Wordlist\FilterList;
 use App\Models\Site\Wordlist\LetterSubs;
-use App\Models\Site\Wordlist\Context;
-use App\Models\Site\Wordlist\ContextBlock;
+use App\Models\Site\Wordlist\Contexts;
+use App\Models\Site\Wordlist\ContextBlocks;
 
 use App\Helpers\ProfanityFilter as Filter;
 
@@ -48,75 +48,121 @@ class ProfanitySeeder extends Seeder
 	];
 
 
-	// Use word roots for the blacklisted words. Your endings should cover for most variants.
+	// Use word roots for the blacklisted substring words.
 	private $blacklist = [
-		'boundary' => [ // Use this for words that end up sub-words of a lot of legit words (i.e. "ass")
-			'ass',
-			'asshole',
-			'hell',
-			'cock',
-			'jap',
-			'rapist',
-			'orgy',
-			'orgie',
+		// The site's self-reporting feature will help populate this with additional words confirmed for the blacklist.
+		// Fill this with full words that should get hit.
+		'boundary' => [
+			['ass', ['es'], 1],
+			['asshole', ['s'], 1],
+			['hell', [], 1],
+			['cock', ['s'], 1],
+			['jap', ['s'], 3],
+			['rape', ['d', 'r', 's'], 3],
+			['rapist', ['s'], 3],
+			['raping', ['s'], 3],
+			['orgy', ['s'], 3],
+			['orgies', [], 3],
+			['hitler', [], 6],
+			['nazi', ['s'], 6],
+			['swastika', ['s'], 6],
+			['nigga', ['s'], 3],
+			['nigger', ['s'], 3],
+			['faggot', ['s'], 3],
+			['fag', ['s'], 3],
+			['boob', ['s', 'ie'], 1],
+			['fuck', ['s', 'ed', 'er', 'ing'], 1],
+			['shit', ['s', 'ting', 'ter'], 1],
+			['damn', ['ed'], 1],
+			['dammit', ['s'], 1],
+			['bitch', ['ed', 'es'], 1],
+			['abortion', ['ed', 's', 'ist', 'ing'], 6],
 		],
-		'substring' => [ // Use this for words that are unlikely to hit legit words. This should be your most common list to fill.
-			'hitler',
-			'nazi',
-			'swastika',
-			'twat',
-			'rape',
-			'boob',
-			'fak',
-			'fuk',
-			'fuck',
-			'shit',
-			'damn',
-			'bitch',
-			'biatch',
-			'abortion',
-			'arse',
-			'ahole',
-			'porn',
-			'cunt',
-			'hore',
-			'hoor',
-			'nig',
-			'fag',
-			'cum',
-			'semen',
-			'slut',
-			'tard',
-			'anal',
-			'penis',
-			'boner',
-			'clit',
-			'vag',
-			'dick',
-			'dyke',
-			'abuse',
-			'axwound',
-			'axewound',
-			'blowjob',
-			'gangbang',
-			'dildo',
-			'molest',
-			'pedo',
-			'smut',
-			'masterba',
-			'masturba',
-			'orgas',
-			'wog',
-			'ejac',
-			'horny',
-			'horne',
-		],
-		'ending' => [ // These can combo on themselves, so having "s" and "ism" already covers "isms" for example
-			'r', 'd', 'e', 's', 't', 'y', 'er', 'es', 'ed', 'ist', 'ies', 'ing', 'ism', 'oid'
+
+		// Fill this list with word roots to check after the full-word list is checked
+		'substring' => [
+			['ass', [], 1],
+			['asshole', [], 1],
+			['hell', [], 1],
+			['cock', [], 1],
+			['jap', [], 1],
+			['rapist', [], 3],
+			['orgy', [], 1],
+			['orgie', [], 1],
+			['hitler', [], 6],
+			['nazi', [], 6],
+			['swastika', [], 6],
+			['twat', [], 1],
+			['rape', [], 6],
+			['boob', [], 1],
+			['fak', [], 1],
+			['fuk', [], 1],
+			['fuck', [], 1],
+			['shit', [], 1],
+			['damn', [], 1],
+			['bitch', [], 1],
+			['biatch', [], 1],
+			['abortion', [], 6],
+			['arse', [], 1],
+			['ahole', [], 1],
+			['porn', [], 6],
+			['cunt', [], 3],
+			['hore', [], 3],
+			['hoor', [], 3],
+			['nig', [], 3],
+			['fag', [], 3],
+			['cum', [], 1],
+			['semen', [], 1],
+			['slut', [], 6],
+			['tard', [], 6],
+			['anal', [], 1],
+			['penis', [], 1],
+			['boner', [], 1],
+			['clit', [], 1],
+			['vag', [], 1],
+			['dick', [], 1],
+			['dyke', [], 6],
+			['abuse', [], 6],
+			['axwound', [], 6],
+			['axewound', [], 6],
+			['blowjob', [], 6],
+			['gangbang', [], 6],
+			['dildo', [], 1],
+			['molest', [], 6],
+			['pedo', [], 6],
+			['smut', [], 6],
+			['masterba', [], 6],
+			['masturba', [], 6],
+			['orgas', [], 6],
+			['wog', [], 3],
+			['ejac', [], 6],
+			['horny', [], 3],
+			['horne', [], 3],
 		],
 	];
+
+
+	// The site's self-reporting feature will help populate this with additional words confirmed for the whitelist.
+	// Fill this with full words that shouldn't get hit.
 	private $whitelist = [
-		'cockpit', 'grape', 'eject', 'hornet', 'basement', 'canal', 'analyst', 'analysis', 'analyze', 'skuntank', 'parse', 'vacuum', 'scunthorpe', 'penistone', 'arsenal', 'cocktail', 'cockerel', 'cockatiel'
+		['cockpit', ['s'], 0],
+		['grape', ['s'], 0],
+		['hornet', ['s'], 0],
+		['basement', ['s'], 0],
+		['canal', ['s'], 0],
+		['analyst', ['s'], 0],
+		['analysis', ['es'], 0],
+		['analyze', ['s', 'd'], 0],
+		['skuntank', ['s'], 0],
+		['parse', ['d', 'r', 's'], 0],
+		['vacuum', ['s', 'ed', 'ing'], 0],
+		['scunthorpe', [], 0],
+		['penistone', [], 0],
+		['arsenal', ['s'], 0],
+		['cocktail', ['s'], 0],
+		['cockerel', ['s'], 0],
+		['cockatiel', ['s'], 0],
+		['cockscomb', ['s'], 0],
 	];
 
 
@@ -125,13 +171,13 @@ class ProfanitySeeder extends Seeder
 		'<trades>' => ['trade', 'trading'],
 		'<site content>' => ['account', 'adopt', 'pet', 'item', 'inventory', 'treasure'],
 		'<rlc>' => ['dollar', 'cent', 'money', 'USD', 'GBP', 'pound', 'pence', 'euro', 'yen', '\$', '¢', '€', '£', '¥'],
-		'<offsite>' => ['offsite', 'Facebook', 'flightrising', 'dragcave', 'dragoncave', 'FB', 'FR', 'FV', 'furvilla', 'DC'],
+		'<offsite>' => ['offsite', 'facebook', 'flightrising', 'dragcave', 'dragoncave', 'FB', 'FR', 'FV', 'furvilla', 'DC', 'chickensmoothie', 'CS'],
 	];
 	private $context_blocks = [
-		'Offsite Sales' => ['<sales>', '<site content>', '<offsite>'],
-		'RLC Sales' => ['<sales>', '<site content>', '<rlc>'],
-		'Offsite Trades' => ['<trades>', '<site content>', '<offsite>'],
-		'RLC Trades' => ['<trades>', '<site content>', '<rlc>'],
+		'Offsite Sales' => [2, ['<sales>', '<site content>', '<offsite>']],
+		'RLC Sales' => [6, ['<sales>', '<site content>', '<rlc>']],
+		'Offsite Trades' => [2, ['<trades>', '<site content>', '<offsite>']],
+		'RLC Trades' => [6, ['<trades>', '<site content>', '<rlc>']],
 	];
 
 
@@ -142,14 +188,15 @@ class ProfanitySeeder extends Seeder
 	public function run(): void
 	{
 		// Remove existing data for when we're re-seeding an existing DB
-		Blacklist::truncate();
-		Whitelist::truncate();
+		FilterList::truncate();
 		LetterSubs::truncate();
-		Context::truncate();
-		ContextBlock::truncate();
+		Contexts::truncate();
+		ContextBlocks::truncate();
+		\Cache::flush();
 
 
 		// Letter Subs
+		// We run this one first so we can use it for the FilterList words.
 		foreach($this->letter_subs as $letter => $sub) {
 			$sub_list = json_encode($sub);
 			$regex = Filter::regexifySubs($sub);
@@ -157,32 +204,40 @@ class ProfanitySeeder extends Seeder
 		}
 
 
-		// Blacklist
-		$endings = '';
+		// Whitelist
+		foreach($this->whitelist as $word_data) {
+			// $word_data = ['cockatiel', ['s'], 0];
+			if($word_data[1] == []) $endings = '';
+			else $endings = '(?:'.implode('|', $word_data[1]).')*';
+
+			$regex = "(?:{$word_data[0]}{$endings})";
+
+			FilterList::create(['word' => $word_data[0], 'filter_type' => 'whitelist', 'regex' => $regex, 'handle_hit' => 0, 'endings' => json_encode($word_data[1])]);
+		}
+		// Blacklists
 		foreach($this->blacklist as $type => $words) {
-			$subbed = Filter::regexifyWords($words);
-			if($type == 'ending') $endings = implode('|', $subbed);
-			foreach($words as $key => $word) {
-				Blacklist::create(['word' => $word, 'filter_type' => $type, 'subbed' => $subbed[$key]]);
+			$subbed = Filter::regexifyWords(Arr::pluck($words, 0));
+
+			foreach($words as $key => $data) {
+				if($data[1] == []) $endings = '';
+				else $endings = '(?:'.implode('|', Filter::regexifyWords($data[1])).')*';
+
+				$regex = "(?:{$subbed[$key]}{$endings})";
+
+				FilterList::create(['word' => $data[0], 'filter_type' => $type, 'regex' => $regex, 'handle_hit' => $data[2], 'endings' => json_encode($data[1])]);
 			}
 		}
-		// Whitelist
-        foreach($this->whitelist as $word) {
-            Whitelist::create(['word' => $word]);
-        }
 
 
 		// Contexts
 		foreach($this->word_context as $context => $words) {
-			$word_list = json_encode($words);
-			$subbed = '/(?:'.implode('|', Filter::regexifyWords($words)).')(?:'.$endings.')*/i';
+			$regex = '/(?:'.implode('|', Filter::regexifyWords($words)).')/i';
 
-			Context::create(['context' => $context, 'words' => $word_list, 'subbed' => $subbed]);
+			Contexts::create(['context' => $context, 'words' => json_encode($words), 'regex' => $regex]);
 		}
 		// Context Blocks
-		foreach($this->context_blocks as $nickname => $contexts) {
-			$context_list = json_encode($contexts);
-			ContextBlock::create(['nickname' => $nickname, 'contexts' => $context_list]);
+		foreach($this->context_blocks as $nickname => $data) {
+			ContextBlocks::create(['nickname' => $nickname, 'contexts' => json_encode($data[1]), 'handle_hit' => $data[0]]);
 		}
 	}
 }
