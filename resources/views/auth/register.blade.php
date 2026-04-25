@@ -15,7 +15,7 @@
 		{{ html()->text('username')->minlength(2)->maxlength(32) }}
 
 		{{ html()->label('Email:', 'email') }}@if($errors->has('email'))<span class="alert danger">{{ $errors->get('email')[0] }}</span>@endif
-		{{ html()->text('email') }}
+		{{ html()->email('email') }}
 
 		{{ html()->label('Password:', 'password') }}@if($errors->has('password'))<span class="alert danger">{{ $errors->get('password')[0] }}</span>@endif
 		{{ html()->password('password') }}
@@ -37,4 +37,4 @@
 		{{ html()->submit('Register an account') }}
 		{{ html()->form()->close() }}
 	</div>
-@endsection('content')
+@endsection

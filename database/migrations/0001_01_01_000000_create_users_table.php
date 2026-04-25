@@ -23,6 +23,9 @@ return new class extends Migration
 			$table->bigInteger('sec_curr')->unsigned()->default(0);
 
 			$table->timestamp('active_at')->nullable()->default(null)->index();
+			$table->string('email')->unique();
+			$table->timestamp('email_verified_at')->nullable();
+			$table->string('password')->nullable();
 			$table->rememberToken();
 			$table->timestamps();
 		});
@@ -31,9 +34,6 @@ return new class extends Migration
 			$table->foreignId('user_id')->primary()->references('id')->on('users');
 			$table->boolean('private_profile')->default(1);
 
-			$table->string('email')->unique();
-			$table->timestamp('email_verified_at')->nullable();
-			$table->string('password');
 			$table->date('birthday');
 			$table->string('timezone')->nullable();
 
@@ -61,6 +61,7 @@ return new class extends Migration
 			$table->text('content_html')->nullable();
 
 			$table->boolean('allow_comments')->default(1);
+			$table->boolean('show_comments')->default(1);
 			$table->bigInteger('comment_count')->unsigned()->default(0);
 		});
 
@@ -83,7 +84,7 @@ return new class extends Migration
 		Schema::create('password_reset_tokens', function (Blueprint $table) {
 			$table->string('email')->primary();
 			$table->string('token');
-			$table->timestamp('created_at')->nullable();
+			$table->timestamps();
 		});
 
 		Schema::create('user_referrals', function (Blueprint $table) {

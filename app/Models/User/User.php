@@ -2,10 +2,12 @@
 
 namespace App\Models\User;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\CanResetPassword;
 
 use App\Traits\Reportable;
 
@@ -14,6 +16,7 @@ use App\Models\Admin\IPHistory;
 use Carbon;
 
 class User extends Authenticatable
+implements MustVerifyEmail, CanResetPassword
 {
 	// Traits
 	/** @use HasFactory<\Database\Factories\UserFactory> */
@@ -26,18 +29,20 @@ class User extends Authenticatable
 		protected $with = ['settings:user_id,reg_step,display_active', 'powers:id,slug'];
 
 		protected $fillable = [
-			'username', 'rank_id', 'pri_curr', 'sec_curr'
+			'username', 'password', 'rank_id', 'pri_curr', 'sec_curr', 'email'
 		];
 
 		protected $hidden = [
-			'remember_token',
+			'password', 'remember_token',
 		];
 
 		protected function casts(): array {
 			return [
+				'password' => 'hashed',
 				'active_at' => 'datetime',
 				'created_at' => 'datetime',
 				'updated_at' => 'datetime',
+				'email_verified_at' => 'datetime',
 			];
 		}
 
@@ -47,9 +52,6 @@ class User extends Authenticatable
 
 	// Accessors
 		// IMPORTANT
-			public function getAuthPasswordAttribute() {
-				return $this->settings->password;
-			}
 			public function perms($key = null) {
 				$perms = $this->powers->keyBy('slug');
 				if($key) $perms = $perms->has($key);
@@ -58,10 +60,23 @@ class User extends Authenticatable
 			public function getPermListAttribute() {
 				return array_keys($this->perms()->toArray());
 			}
+			public function getIsVerifiedAttribute() {
+				return $this->email_verified_at ? true : false;
+			}
 
 		// Misc
 			public function getDisplayNameAttribute() {
-				return '<a href="/user/'.$this->id.'">'.$this->username.'</a>';
+				return "<a href='{$this->link_url}'>{$this->username}</a>";
+			}
+			public function getLinkURLAttribute() {
+				return "/user/{$this->id}";
+			}
+			public function getDisplayIconAttribute() {
+				return "<img src='{$this->icon_url}' class='avatar'>";
+			}
+			public function getIconURLAttribute() {
+				$icon = ($this->id % 5) + 1;
+				return "/images/layout/avatars/{$icon}.png";
 			}
 
 		// Blocks
