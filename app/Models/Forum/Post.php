@@ -34,10 +34,10 @@ class Post extends Model
 			return $this->content_html;
 		}
 		public function getPostedAtAttribute() {
-			return $this->created_at->tz(Config::get('site_settings.site_time'))->format('jS F, Y \a\t g:ia');
+			return $this->created_at->tz(Config::get('site_settings.site_time'))->format(Config::get('site_settings.time_format'));
 		}
 		public function getEditedAtAttribute() {
-			return $this->updated_at->tz(Config::get('site_settings.site_time'))->format('jS F, Y \a\t g:ia');
+			return $this->updated_at->tz(Config::get('site_settings.site_time'))->format(Config::get('site_settings.time_format'));
 		}
 		public function getIsDeletedAttribute() {
 			return $this->deleted_at ? true : false;

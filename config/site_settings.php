@@ -15,6 +15,7 @@ return [
 	*/
 
 	'site_time' => 5,
+	'time_format' => 'jS F, Y \a\t g:ia',
 
 
 

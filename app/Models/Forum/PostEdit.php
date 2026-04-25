@@ -35,7 +35,7 @@ class PostEdit extends Model
 			return $this->content_html;
 		}
 		public function getPostedAtAttribute() {
-			return $this->created_at->addHours(Config::get('site_settings.adjust'))->format('jS F, Y \a\t g:ia');
+			return $this->created_at->addHours(Config::get('site_settings.site_time'))->format(Config::get('site_settings.time_format'));
 		}
 
 

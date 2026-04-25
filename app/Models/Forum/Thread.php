@@ -45,10 +45,10 @@ class Thread extends Model
 			return $this->deleted_at ? true : false;
 		}
 		public function getRemovedAtAttribute() {
-			return $this->deleted_at->addHours(Config::get('site_settings.adjust'))->format('jS F, Y \a\t g:ia');
+			return $this->deleted_at->addHours(Config::get('site_settings.site_time'))->format(Config::get('site_settings.time_format'));
 		}
 		public function getPostedAtAttribute() {
-			return $this->created_at->addHours(Config::get('site_settings.adjust'))->format('jS F, Y \a\t g:ia');
+			return $this->created_at->addHours(Config::get('site_settings.site_time'))->format(Config::get('site_settings.time_format'));
 		}
 		public function getDisplayNameAttribute() {
 			return '<a href="'.$this->link.'">'.$this->name.'</a>';
