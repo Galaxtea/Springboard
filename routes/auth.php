@@ -1,6 +1,8 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\User\AuthController;
+use App\Http\Controllers\User\EmailVerifyController;
+
 
 Route::controller(AuthController::class)->group(function() {
 	Route::middleware(['guest'])->group(function() {
@@ -18,10 +20,12 @@ Route::controller(AuthController::class)->group(function() {
 
 	Route::middleware(['auth'])->group(function() {
 		Route::post('/logout', 'postLogout');
-
-		Route::get('/email/verify', 'getNeedEmailVerify')->name('verification.notice');
-		Route::get('/email/verify/{id}/{hash}', 'getVerifyingEmail')->middleware(['signed'])->name('verification.verify');
-		Route::post('/email/send-verify', 'postSendVerifyEmail')->middleware(['throttle:6,1'])->name('verification.send');
 	});
 });
 
+
+Route::controller(EmailVerifyController::class)->middleware(['auth'])->group(function() {
+		Route::get('/email/verify', 'getNeedEmailVerify')->name('verification.notice');
+		Route::get('/email/verify/{id}/{hash}', 'getVerifyingEmail')->middleware(['signed'])->name('verification.verify');
+		Route::post('/email/send-verify', 'postSendVerifyEmail')->middleware(['throttle:6,1'])->name('verification.send');
+});
