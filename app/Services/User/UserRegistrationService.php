@@ -3,7 +3,6 @@
 namespace App\Services\User;
 
 use DB;
-use Config;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
@@ -33,8 +32,8 @@ class UserRegistrationService extends Service
 
 		try {
 			// Add in extra data
-				$data['pri_curr'] = Config::get('site_settings.pri_start');
-				$data['sec_curr'] = Config::get('site_settings.sec_start');
+				$data['pri_curr'] = config('site_settings.currencies.primary.start_amount');
+				$data['sec_curr'] = config('site_settings.currencies.secondary.start_amount');
 				$data['password'] = Hash::make($data['password']);
 				$data['was_referred'] = $data['referrer'] ? 1 : 0;
 

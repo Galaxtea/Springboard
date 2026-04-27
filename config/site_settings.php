@@ -30,13 +30,18 @@ return [
 	|
 	*/
 
-	'pri_curr' => 'Coins',
-	'pri_abbr' => 'C',
-	'pri_start' => 5000,
-
-	'sec_curr' => 'Gems',
-	'sec_abbr' => 'G',
-	'sec_start' => 0,
+	'currencies' => [
+		'primary' => [
+			'name' => 'Coins',
+			'shorthand' => 'C',
+			'start_amount' => 7500,
+		],
+		'secondary' => [
+			'name' => 'Gems',
+			'shorthand' => 'G',
+			'start_amount' => 10,
+		],
+	],
 
 
 

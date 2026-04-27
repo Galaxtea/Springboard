@@ -6,19 +6,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-
-
-use Config;
-use Carbon\Carbon;
-use App\Models\User\User;
-use Illuminate\Support\Facades\Cache;
-
-
-
-use App\Services\Site\SiteService;
-
-
-
 class CheckActiveUser
 {
 	/**
@@ -32,24 +19,9 @@ class CheckActiveUser
 		view()->share('user', $user);
 
 
-
-
-
-
-		$fresh = 1 * 60;
-		$stale = 5 * 60;
-
-
-		$currencies = (object) [
-				'primary_name' => Config::get('site_settings.pri_curr'),
-				'secondary_name' => Config::get('site_settings.sec_curr'),
-				'primary_abbr' => Config::get('site_settings.pri_abbr'),
-				'secondary_abbr' => Config::get('site_settings.sec_abbr'),
-			];
-
-
+		// Encoding then decoding quickly converts the multidimensional array into an object
+		$currencies = json_decode(json_encode(config('site_settings.currencies')));
 		view()->share('currencies', $currencies);
-
 
 
 		return $next($request);
