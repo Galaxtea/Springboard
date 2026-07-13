@@ -13,8 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
 		health: '/up',
 	)
 	->withMiddleware(function (Middleware $middleware): void {
+		$middleware->throttleWithRedis();
 		$middleware->web(append: [CheckActiveUser::class]);
-	$middleware->trustHosts(at: fn() => config('site_settings.trusted_hosts')
+		$middleware->trustHosts(at: fn() => config('site_settings.trusted_hosts')
 			// , subdomains: false
 		);
 	})

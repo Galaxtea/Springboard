@@ -75,7 +75,7 @@ return [
 	*/
 
 	'trusted_hosts' => [
-		'^lanterns\.click$',
+		// '^lanterns\.click$',
 	],
 
 ];
