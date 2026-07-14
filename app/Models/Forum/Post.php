@@ -45,8 +45,11 @@ class Post extends Model
 		public function getIsEditedAttribute() {
 			return $this->editor_id ? true : false;
 		}
-		public function getLinkAttribute() {
+		public function getLinkURLAttribute() {
 			return "/forums/{$this->board->slug}/{$this->thread_id}/post_{$this->id}";
+		}
+		public function getReportTypeAttribute() {
+			return "forum_post";
 		}
 
 

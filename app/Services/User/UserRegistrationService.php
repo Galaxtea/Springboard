@@ -5,7 +5,6 @@ namespace App\Services\User;
 use DB;
 use Exception;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
 
 use App\Models\User\User;
 use App\Models\Site\RegCode;
@@ -16,8 +15,6 @@ class UserRegistrationService extends Service
 {
 	public function register($data) {
 		if($user = $this->commitUser($data)) { // A user account has successfully been added, so proceed
-			event(new Registered($user));
-
 			if(isset($data['reg_code'])) $this->useRegCode($data['reg_code'], $user->id);
 			if($data['referrer'] != null) $this->creditReferrer($data['referrer'], $user);
 
@@ -36,6 +33,7 @@ class UserRegistrationService extends Service
 				$data['sec_curr'] = config('site_settings.currencies.secondary.start_amount');
 				$data['password'] = Hash::make($data['password']);
 				$data['was_referred'] = $data['referrer'] ? 1 : 0;
+				$data['active_at'] = \Carbon\Carbon::now();
 
 
 			// Create all of the relevant User DB rows

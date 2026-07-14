@@ -21,7 +21,11 @@
 		<div class="wrapper">
 			<div class="content">
 				@yield('crumbs', Breadcrumbs::render('admin'))
-				<div class="alerts"></div>
+				<div class="alerts">
+					@if(session('status'))
+						<div>{{ session('status') }}</div>
+					@endif
+				</div>
 				@yield('content')
 			</div>
 			@include('layouts.partials.admin_sidebar')

@@ -15,10 +15,10 @@ use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Gate;
 use App\Models\User\User;
 
-// Come back to these...
-// use Limit;
-// use RateLimiter;
-// use Request;
+
+use Illuminate\Http\Request;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 
 use Spatie\Html\Html;
 use App\Helpers\HtmlExtended;
@@ -53,8 +53,34 @@ class AppServiceProvider extends ServiceProvider
 		Route::pattern('id', '[0-9]+');
 
 
+		// Rate Limiting
+			RateLimiter::for('login', function (Request $request) {
+				return [
+					Limit::perMinute(500),
+					Limit::perMinute(3)->by($request->ip()),
+					Limit::perMinute(3)->by(strtolower($request->input('email')))->response(function () {
+						return back()->withInput()->with(['status' => __('ratelimit.default')]);
+					}),
+				];
+			});
+
+			RateLimiter::for('register', function (Request $request) {
+				return Limit::perMinute(5)->by($request->ip())->response(function () {
+					return back()->withInput()->with(['status' => __('ratelimit.default')]);
+				});
+			});
+
+			RateLimiter::for('forgot-password', function (Request $request) {
+				return [
+					Limit::perMinute(500),
+					Limit::perMinute(3)->by($request->ip()),
+				];
+			});
+
+
+
 		// Access Gates
-			Gate::define('can-panel', function (User $user) {
+			Gate::define('can_panel', function (User $user) {
 				return $user->perms('can_panel') ? Response::allow() : Response::denyAsNotFound();
 			});
 	}

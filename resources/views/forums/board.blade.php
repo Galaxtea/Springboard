@@ -14,7 +14,9 @@
 	<h3>Threads</h3>
 	<div class="btn-row">
 		@if($user && ($board->can_new || $user->perms('forum_boost')))
-			<a href="/forums/{{ $board->slug }}/new" class="btn">Start Thread</a>
+			<a href="/forums/{{ $board->slug }}/new">
+				{{ html()->button('Start Thread') }}
+			</a>
 		@endif
 	</div>
 	@foreach($threads as $thread)

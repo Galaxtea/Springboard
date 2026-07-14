@@ -30,7 +30,7 @@ class UserController extends AdminController
 		return view('admin.user.list', ['players' => $this->service->getAll()]);
 	}
 	public function getUser($id) {
-		return view('admin.user.user', ['player' => User::with('settings')->find($id), 'recent_ip' => IPHistory::where('user_id', $id)->orderBy('updated_at', 'DESC')->first()]);
+		return view('admin.user.user', ['player' => User::with('settings')->find($id), 'recent_ip' => IPHistory::where('user_id', $id)->orderBy('created_at', 'DESC')->first()]);
 	}
 
 	public function getUserIPs($id) {

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Events\Registered;
 
 use App\Models\User\User;
 use App\Models\User\UserSettings;
@@ -49,19 +50,18 @@ class AuthController extends Controller
 		return view('auth.register', ['open_reg' => false]);
 	}
 	public function postRegister(RegisterUserRequest $request) {
-		// We've validated the registration info already, but we need to quietly handle
-		// conflicting emails to prevent email enumeration through the registration form
-		if($exists = User::where('email', $request['email'])->first()) {
-			// The email is already in use, so we quietly fake the reg request, but send an alert to the used email
+		if($request['rules']) {
+			// Bot trap - this checkbox should NOT be checked if it's a normal user.
+		} elseif($exists = User::where('email', $request['email'])->first()) {
+			// The email is already in use, so we quietly fake the reg request, but send an alert to the used email.
 			$exists->notify(new ExistingEmail());
-			return to_route('login')->with(['status' => __("auth.verify")]);
+		} elseif($user = (new RegService)->register($request->validated())) {
+			// We registered successfully.
+			event(new Registered($user));
+		} else {
+			return back()->withInput();
 		}
-
-		$reg_service = new RegService;
-		if($user = $reg_service->register($request->validated())) {
-			return to_route('login')->with(['status' => __("auth.verify")]);
-		}
-		return back()->withInput();
+		return to_route('login')->with(['status' => __("auth.verify")]);
 	}
 
 
@@ -70,9 +70,9 @@ class AuthController extends Controller
 	}
 	public function postForgotPassword(Request $request) {
 		$request->validate(['email' => 'required|email']);
+		Password::sendResetLink($request->only('email'));
 
-		$status = Password::sendResetLink($request->only('email'));
-
+		// To prevent email enumeration, we always give the same response message.
 		return back()->withInput()->with(['status' => __("passwords.sent")]);
 	}
 	public function getResetPassword($token) {

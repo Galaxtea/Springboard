@@ -14,6 +14,7 @@ return new class extends Migration
 		Schema::create('users', function (Blueprint $table) {
 			$table->id();
 			$table->string('username', 32)->unique();
+			$table->string('email')->unique();
 
 			$table->bigInteger('rank_id')->unsigned()->default(1);
 			$table->boolean('has_upgrades')->default(0);
@@ -23,7 +24,6 @@ return new class extends Migration
 			$table->bigInteger('sec_curr')->unsigned()->default(0);
 
 			$table->timestamp('active_at')->nullable()->default(null)->index();
-			$table->string('email')->unique();
 			$table->timestamp('email_verified_at')->nullable();
 			$table->string('password')->nullable();
 			$table->rememberToken();

@@ -6,14 +6,20 @@ use Carbon\Carbon;
 use App\Models\User\User;
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\User\UserController;
 
 
 require_once __DIR__.'/auth.php'; // Most of these require the viewer to be logged-out, so this isn't included in the group below.
 
+
 Route::middleware(['auth', 'verified'])->group(function() {
 	Route::controller(HomeController::class)->group(function() {
-		Route::get('/', 'index')->withoutMiddleware(['auth', 'verified'])->name('home');
+		Route::withoutMiddleware(['auth', 'verified'])->group(function() {
+			Route::get('/', 'index')->name('home');
+			Route::get('/legal/terms', 'terms')->name('terms');
+			Route::get('/legal/privacy', 'privacy')->name('privacy');
+		});
 		Route::get('/online', 'online')->name('online');
 	});
 
@@ -39,6 +45,10 @@ Route::middleware(['auth', 'verified'])->group(function() {
 
 
 
+	// Profile Comments
+	Route::controller(CommentController::class)->group(function() {
+		Route::post('/comment/{type}/{id}', 'postComment')->name('comment.submit');
+	});
 
 
 
@@ -49,6 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function() {
 
 	require_once __DIR__.'/admin.php';
 	require_once __DIR__.'/forums.php';
+	require_once __DIR__.'/reports.php';
 });
 
 

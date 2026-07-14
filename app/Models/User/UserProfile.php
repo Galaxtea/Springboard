@@ -16,9 +16,10 @@ class UserProfile extends Model
 		protected $table = 'user_profiles';
 		public $timestamps = false;
 		protected $primaryKey = 'user_id';
+		protected $with = ['comments'];
 
 		protected $fillable = [
-			'user_id', 'content_bbc', 'content_html', 'allow_comments', 'comment_count'
+			'user_id', 'content_bbc', 'content_html', 'allow_comments', 'show_comments', 'comment_count'
 		];
 
 

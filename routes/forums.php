@@ -1,6 +1,5 @@
 <?php # Forum Routes
 
-use App\Models\Forum\Board;
 use App\Http\Controllers\Forum\ForumController;
 use App\Http\Controllers\Forum\PostController;
 use App\Http\Controllers\Forum\ThreadController;
@@ -8,7 +7,7 @@ use App\Http\Controllers\Forum\ThreadController;
 Route::controller(ForumController::class)->prefix('forums')->group(function () {
 	Route::get('/', 'index')->name('forums');
 
-	Route::get('/{board}', 'getBoard')->name('board')->whereIn('board', Board::pluck('slug')->toArray());
+	Route::get('/{board}', 'getBoard')->name('board');
 
 
 	Route::controller(ThreadController::class)->group(function () {
@@ -21,10 +20,10 @@ Route::controller(ForumController::class)->prefix('forums')->group(function () {
 			Route::post('/{thread}/unclone', 'postUnclone')->whereNumber('thread');
 		});
 
-		Route::get('/{board}/{thread}', 'getThread')->name('thread')->whereIn('board', Board::pluck('slug')->toArray())->whereNumber('thread');
+		Route::get('/{board}/{thread}', 'getThread')->name('thread')->whereNumber('thread');
 
-		Route::get('/{board}/new', 'getNew')->whereIn('board', Board::pluck('slug')->toArray());
-		Route::post('/{board}/new', 'postNew')->whereIn('board', Board::pluck('slug')->toArray());
+		Route::get('/{board}/new', 'getNew');
+		Route::post('/{board}/new', 'postNew');
 
 		Route::post('/thread/{thread}/sub', 'addSub')->whereNumber('thread');
 		Route::post('/thread/{thread}/unsub', 'removeSub')->whereNumber('thread');
@@ -34,7 +33,7 @@ Route::controller(ForumController::class)->prefix('forums')->group(function () {
 	Route::controller(PostController::class)->group(function () {
 		Route::post('/{thread}/post', 'postNew')->whereNumber('thread');
 
-		Route::get('/{board}/{thread_id}/post_{id}', 'locatePost')->name('forum_post')->whereIn('board', Board::pluck('slug')->toArray())->whereNumber('thread_id');
+		Route::get('/{board}/{thread_id}/post_{id}', 'locatePost')->name('forum_post')->whereNumber('thread_id');
 
 		Route::prefix('post')->group(function () {
 			Route::post('/preview', 'postPreview');

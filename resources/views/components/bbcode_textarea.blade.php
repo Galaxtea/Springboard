@@ -1,7 +1,7 @@
 
 <div class="post-preview forum-post clearfix" style="display:none;">
 	<div class="post-user">
-		{!! $user->display_avatar !!}
+		{!! $user->display_icon !!}
 		<b class="name">{!! $user->display_name !!}</b>
 	</div>
 	<div class="post-text">
@@ -28,11 +28,11 @@
 	@endif
 </div>
 
-{{ html()->textarea($name, $default)->id($name)->class('form-control' . ($errors->has($name) ? ' is-invalid' : null))->rows(7) }}
+{{ html()->textarea($name, $default)->id($name)->class('form-control' . ($errors->has($name) ? ' is-invalid' : null))->cols(75)->rows(5) }}
 @error($name)<br><small class="form-error">{{ $message }}</small>@enderror
 
 
-<span onclick="previewPost('{{ $name }}')">Preview Post</span>
+{{ html()->button('Preview Post')->attribute('onclick', "previewPost('$name')") }}
 
 
 @pushOnce('scripts', 'bbcode.js')

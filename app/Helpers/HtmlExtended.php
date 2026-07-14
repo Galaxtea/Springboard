@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use Spatie\Html\Elements\Div;
 use Spatie\Html\Elements\Button;
+use Spatie\Html\Elements\A;
 use Spatie\Html\Html;
 
 class HtmlExtended extends Html
@@ -32,5 +33,9 @@ class HtmlExtended extends Html
 
 	public function textareaBBC($name, $default, $data) {
 		return view('components.bbcode_textarea', ['name' => $name, 'default' => $default, 'data' => $data]);
+	}
+
+	public function reportButton($source) {
+		return A::create()->href($source->report_url)->child($this->button("Report User")->class('danger'));
 	}
 }

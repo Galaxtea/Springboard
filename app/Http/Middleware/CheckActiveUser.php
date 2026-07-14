@@ -15,12 +15,25 @@ class CheckActiveUser
 	 */
 	public function handle(Request $request, Closure $next): Response
 	{
-		if($user = auth()->user()) $user->touchActive($request->ip());
+		if($user = auth()->user()) {
+			$user->touchActive();
+
+			$ip = $request->ip();
+			cache()->tags(['ip_history', 'user:'.$user->id])->remember('ip:'.$ip, now()->plus(hours: 24), function() use ($user, $ip) {
+				return \App\Models\Admin\IPHistory::create(['user_id' => $user->id, 'ip_address' => $ip]);
+			});
+		}
 		view()->share('user', $user);
 
 
+
+
+
+
+
+
 		// Encoding then decoding quickly converts the multidimensional array into an object
-		$currencies = json_decode(json_encode(config('site_settings.currencies')));
+		$currencies = cache()->rememberForever('currencies', function() {return json_decode(json_encode(config('site_settings.currencies')));});
 		view()->share('currencies', $currencies);
 
 

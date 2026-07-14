@@ -8,7 +8,7 @@
 		<a id="post_{{ $edit->id }}"/>
 		<div class="forum-post clearfix">
 			<div class="post-user">
-				{!! $edit->editor->display_avatar !!}
+				{!! $edit->editor->display_icon !!}
 				<b class="name">{!! $edit->editor->display_name !!}</b>
 			</div>
 			<div class="post-text">

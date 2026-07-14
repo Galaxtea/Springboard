@@ -10,7 +10,6 @@
 		@endif
 
 
-		<!--  -->
 		{{ html()->label('Username:', 'username') }}@if($errors->has('username'))<span class="alert danger">{{ $errors->get('username')[0] }}</span>@endif
 		{{ html()->text('username')->minlength(2)->maxlength(32) }}
 
@@ -28,11 +27,17 @@
 		{{ html()->label('Referrer:', 'referrer') }}@if($errors->has('referrer'))<span class="alert danger">{{ $errors->get('referrer')[0] }}</span>@endif
 		{{ html()->text('referrer') }}
 
+		I have read and accept the:
 		{{ html()->checkbox('tos') }}
-		<label for="tos">I definitely agree :)</label>@if($errors->has('tos'))<span class="alert danger">{{ $errors->get('tos')[0] }}</span>@endif
+		<label for="tos"><a href="/legal/terms">Terms of Service</a></label>@if($errors->has('tos'))<span class="alert danger">{{ $errors->get('tos')[0] }}</span>@endif
 
 		{{ html()->checkbox('privacy') }}
-		<label for="privacy">Mmhhm agree to this too fo sho</label>@if($errors->has('privacy'))<span class="alert danger">{{ $errors->get('privacy')[0] }}</span>@endif
+		<label for="privacy"><a href="/legal/privacy">Privacy Policy</a></label>@if($errors->has('privacy'))<span class="alert danger">{{ $errors->get('privacy')[0] }}</span>@endif
+
+		<div style="display: none;"> {{-- Intentional, no touchy --}}
+			{{ html()->checkbox('rules') }}
+			<label for="rules">Site Rules</label>
+		</div>
 
 		{{ html()->submit('Register an account') }}
 		{{ html()->form()->close() }}

@@ -23,12 +23,14 @@
 .wrapper > div { margin: 2em; }
 .navbar, .footer { background-color: #555; margin: 1em 0; line-height: 2.8em; padding: 0.7em 0; }
 .footer { text-align: center; border-radius: 0 0 2em 2em; 
-	margin-bottom: 3em; }
+	margin-bottom: 3em;
+	line-height: 1.4em;
+}
 .sidebar { flex: 2; }
 .sidebar > div { background-color: #444; padding: 0.7em 0.5em; text-align: center }
 .sidebar > div + div { margin-top: 2em; }
-.content { flex: 4;	background-color: #333; padding: 1em; }
-.sidebar > div, .content, .navbar, .footer {
+.wrapper > .content { flex: 4; background-color: #333; padding: 1em; }
+.sidebar > div, .wrapper > .content, .navbar, .footer {
 	background-color: rgba(0,0,0,0.6);
 	border: 2px solid black;
 }
@@ -128,6 +130,7 @@ h1, h2, h3, h4, h5, h6 {
 	display: inline-block;
 	width: 15%;
 	float: left;
+	text-align: center;
 }
 .forum-post .post-text {
 	display: inline-block;
@@ -150,6 +153,72 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+textarea, input, select {
+	background-color: var(--bg-dark);
+	border-bottom: 2px dashed #ccc;
+}
+
+img.avatar {
+	max-width: 100px;
+	max-height: 100px;
+}
+
+.comment {
+	padding: 0.5em;
+	border: 1px solid white;
+	border-radius: 15px;
+	border-bottom: 3px solid #aaa;
+	border-right: 3px solid #aaa;
+}
+.comment + .comment {
+	margin-top: 1em;
+}
+.comment:nth-child(even) {
+	background: rgba(255,255,255,0.05);
+}
+.comment:nth-child(odd) {
+	background: rgba(0,0,0,0.5);
+}
+
+.comment img.avatar {
+	max-width: 50px;
+	max-height: 50px;
+}
+
+
+
+
+.btn-row { margin-top: 0.5em }
+.btn-row > * {
+	display: inline-block;
+}
+
+.btn {
+	border-radius: 10px;
+	padding: 0.5em;
+
+	background-color: var(--alert-bg);
+	color: var(--alert-text);
+	border: 1px solid var(--alert-border);
+}
+
+.success {
+	background-color: var(--success-bg);
+	color: var(--success-text);
+	border-color: var(--success-border);
+}
+.danger {
+	background-color: var(--danger-bg);
+	color: var(--danger-text);
+	border-color: var(--danger-border);
+}
+
+
+
+
+
+
+
 
 
 
@@ -162,23 +231,24 @@ h1, h2, h3, h4, h5, h6 {
 
 
 
+		--alert-bg: #90bcc5;
+		--alert-border: #31709c;
+		--alert-text: #0a4975;
+
+		--success-bg: #9dc293;
+		--success-border: #3c763d;
+		--success-text: #1d511e;
+
+		--danger-bg: #c68c96;
+		--danger-border: #8e4e59;
+		--danger-text: #752432;
+
+
 
 		/* These were taken right from my Lanterns CSS, so these should PROBABLY get changed for Springboard :) */
 		--bg-parallax: #0e2417;
 
-		--success: #9dc293;
 
-		--alert-bg: #d9edf7;
-		--alert-border: #90bcc5;
-		--alert-text: #31709c;
-
-		--danger-bg: #f2dede;
-		--danger-border: #b5969b;
-		--danger-text: #b04465;
-
-		--success-bg: #dff0d8;
-		--success-border: #9fb78b;
-		--success-text: #3c763d;
 
 		--warn-bg: #fcf8e3;
 		--warn-border: #ccba96;
@@ -205,6 +275,9 @@ h1, h2, h3, h4, h5, h6 {
 /*
  | Default Fixes
  |----------------------------*/
+	img { display: inline-block; }
+	button { cursor: pointer; }
+	textarea { resize: both; }
 
 
 /*
@@ -221,7 +294,7 @@ h1, h2, h3, h4, h5, h6 {
 /*
  | Breadcrumbs
  |----------------------------*/
- 	.crumbs { font-style: italic; font-size: 0.9em; }
+	.crumbs { font-style: italic; font-size: 0.9em; }
 
 
 /*
@@ -247,6 +320,12 @@ h1, h2, h3, h4, h5, h6 {
 /*
  | Forms
  |----------------------------*/
+
+
+/*
+ | BBCode
+ |----------------------------*/
+	.bbc-tags > span { cursor: pointer; }
 
 
 /*

@@ -15,7 +15,7 @@ class UserController extends Controller
 		$user = User::find($user_id);
 
 		if(!$user || ($user->settings->private_profile && !auth()->user())) return abort(404, "That user doesn't appear to exist.");
-		return view('user.profile', ['profile' => User::find($user_id)]);
+		return view('user.profile', ['profile' => $user]);
 	}
 
 	public function getSettings() {

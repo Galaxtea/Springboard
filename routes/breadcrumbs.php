@@ -54,6 +54,23 @@
 
 
 
+// Reports
+	Breadcrumbs::for('reports.list', function($trail) {
+		$trail->push("Your Reports", route('reports.list'));
+		$trail->parent('home');
+	});
+	Breadcrumbs::for('reports.view', function($trail, $id) {
+		$trail->push("Open Report", route('reports.view', $id));
+		$trail->parent('reports.list');
+	});
+	Breadcrumbs::for('reports.create', function($trail) {
+		$trail->push("Creating Report", route('reports.create'));
+		$trail->parent('home');
+	});
+
+
+
+
 // Admin Panel
 	Breadcrumbs::for('admin', function($trail) {
 		$trail->push("Admin Panel", route('admin'));

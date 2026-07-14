@@ -26,10 +26,10 @@ implements MustVerifyEmail, CanResetPassword
 	// Model Settings
 		protected $table = 'users';
 		public $timestamps = true;
-		protected $with = ['settings:user_id,reg_step,display_active', 'powers:id,slug'];
+		protected $with = [];
 
 		protected $fillable = [
-			'username', 'password', 'rank_id', 'pri_curr', 'sec_curr', 'email'
+			'username', 'password', 'rank_id', 'pri_curr', 'sec_curr', 'email', 'active_at'
 		];
 
 		protected $hidden = [
@@ -59,6 +59,9 @@ implements MustVerifyEmail, CanResetPassword
 			}
 			public function getPermListAttribute() {
 				return array_keys($this->perms()->toArray());
+			}
+			public function getReportTypeAttribute() {
+				return "user";
 			}
 			public function getIsVerifiedAttribute() {
 				return $this->email_verified_at ? true : false;
@@ -103,6 +106,9 @@ implements MustVerifyEmail, CanResetPassword
 			}
 			public function rank() {
 				return $this->belongsTo(Rank::class);
+			}
+			public function ips() {
+				return $this->hasMany(IPHistory::class, 'user_id', 'id');
 			}
 
 		// General
@@ -170,15 +176,11 @@ implements MustVerifyEmail, CanResetPassword
 			return $seen . (!$visible ? ' (invisible)' : '');
 		}
 
-		public function touchActive($ip) {
-			// Quickly update the user's last seen timestamp :)
+		public function touchActive() {
+			if(($this->active_at)->diffInMinutes() < 3) return; // only update seen timestamp every 3+ minutes
+
 			$this->active_at = Carbon\Carbon::now();
 			$this->save();
-			IPHistory::upsert([
-				'user_id' => $this->id,
-				'ip_address' => $ip,
-				'updated_at' => Carbon\Carbon::now()
-			], uniqueBy: ['user_id', 'ip_address'], update: ['updated_at']);
 			return;
 		}
 }

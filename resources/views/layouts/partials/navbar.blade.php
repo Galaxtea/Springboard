@@ -12,7 +12,7 @@
 		<li><a href="/">Explore</a></li>
 		<li><a>
 			{{ html()->form('POST', '/logout')->open() }}
-			{{ html()->submit('Log Out') }}
+			{{ html()->submit('Log Out')->forgetAttribute('class') }}
 			{{ html()->form()->close() }}
 		</a></li>
 	@else

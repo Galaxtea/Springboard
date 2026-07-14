@@ -21,6 +21,9 @@
 		<div class="wrapper">
 			<div class="content">
 				@yield('crumbs', Breadcrumbs::render('home'))
+				<noscript>
+					This site works best with javascript enabled.
+				</noscript>
 				<div class="alerts">
 					@if(session('status'))
 						<div>{{ session('status') }}</div>
