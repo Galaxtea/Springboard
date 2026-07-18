@@ -15,7 +15,6 @@ class Thread extends Model
 	// Model Settings
 		protected $table = 'forum_threads';
 		protected $perPage = 25;
-		protected $with = ['poster', 'tags', 'subList', 'latest'];
 
 		protected $fillable = [
 			'name', 'board_id', 'poster_id', 'orig_board_id',

@@ -17,6 +17,7 @@ class Post extends Model
 	// Model Settings
 		protected $table = 'forum_posts';
 		protected $perPage = 20;
+		protected $with = ['poster'];
 
 		protected $fillable = [
 			'poster_id', 'editor_id', 'thread_id', 'content_bbc', 'content_html',
@@ -45,11 +46,12 @@ class Post extends Model
 		public function getIsEditedAttribute() {
 			return $this->editor_id ? true : false;
 		}
-		public function getLinkURLAttribute() {
-			return "/forums/{$this->board->slug}/{$this->thread_id}/post_{$this->id}";
-		}
 		public function getReportTypeAttribute() {
 			return "forum_post";
+		}
+		public function link_URL($slug = null) {
+			if(!$slug) $slug = $this->board->slug;
+			return "/forums/{$slug}/{$this->thread_id}/post_{$this->id}";
 		}
 
 

@@ -14,7 +14,6 @@ class Board extends Model
 	// Model Settings
 		protected $table = 'forum_boards';
 		public $timestamps = false;
-		protected $with = ['parent'];
 
 		protected $fillable = [
 			'name', 'slug', 'description', 'category', 'parent_board', 'thread_count',

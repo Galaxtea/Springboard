@@ -50,7 +50,7 @@ class ForumService extends Service
 
 	public function getThread($id, $deleted = false) {
 		if($deleted) return Thread::withTrashed()->where('id', $id)->with('boards')->first();
-		return Thread::where('id', $id)->with('boards')->first();
+		return Thread::where('id', $id)->with(['boards', 'posts'])->first();
 	}
 
 	public function getPost($id) {

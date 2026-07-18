@@ -1,4 +1,4 @@
-@props(['post'])
+@props(['post', 'slug'])
 <a id="post_{{ $post->id }}"/>
 <div class="forum-post clearfix {{ $post->is_deleted ? 'deleted' : '' }}">
 	<div class="post-user">
@@ -21,7 +21,7 @@
 						@endif
 						<a href="{{ $post->report_url }}">!</a> |
 					@endif
-					<a href="{{ $post->link_url }}">L</a>
+					<a href="{{ $post->link_url($slug) }}">L</a>
 				</div>
 			</div>
 			{!! $post->display_content !!}

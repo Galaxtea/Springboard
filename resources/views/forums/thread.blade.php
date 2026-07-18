@@ -38,7 +38,7 @@
 	<h2>{{ $thread->name }}</h2>
 	@foreach($posts as $post)
 		<!-- Check if the viewer has been blocked by or has blocked the poster (make an 'ignore blocks' perm for staffs) -->
-		<x-forums.post_card :$post/>
+		<x-forums.post_card :$post :slug="$board->slug"/>
 	@endforeach
 	{!! $posts->render() !!}
 
