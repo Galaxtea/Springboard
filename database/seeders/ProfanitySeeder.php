@@ -192,7 +192,7 @@ class ProfanitySeeder extends Seeder
 		LetterSubs::truncate();
 		Contexts::truncate();
 		ContextBlocks::truncate();
-		\Cache::flush();
+		cache()->flush();
 
 
 		// Letter Subs

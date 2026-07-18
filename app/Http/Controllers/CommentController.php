@@ -22,7 +22,7 @@ class CommentController extends Controller
 		User::find($id)->profile->comments()->create([
 			'user_id' => auth()->user()->id,
 			'content_bbc' => $request['content_bbc'],
-			'content_html' => BBCode::parse(Filter::$filtered_content),
+			'content_html' => BBCode::parse(Filter::$filtered),
 		]);
 		return back();
 	}
@@ -43,7 +43,7 @@ class CommentController extends Controller
 		$data = [
 			'user_id' => auth()->user()->id,
 			'content_bbc' => $request['content_bbc'],
-			'content_html' => BBCode::parse(Filter::$filtered_content),
+			'content_html' => BBCode::parse(Filter::$filtered),
 			'is_panel' => $is_panel,
 		];
 
