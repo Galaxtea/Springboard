@@ -1,12 +1,16 @@
 @extends('layouts.main')
 @section('title') Login @endsection
 @section('content')
+	@if($errors->has('login'))
+		<div class="alert danger">{{ $errors->get('login')[0] }}</div>
+	@endif
+
 	{{ html()->form('POST', '/login')->open() }}
 
-	{{ html()->label('Username:', 'username') }}@if($errors->has('username'))<span class="alert danger">{{ $errors->get('username')[0] }}</span>@endif
-	{{ html()->text('username') }}
+	{{ html()->label('Email:', 'email') }}@if($errors->has('email'))<span class="alert danger">{{ $errors->get('email')[0] }}</span>@endif
+	{{ html()->text('email') }}
 
-	{{ html()->label('Password:', 'password') }}
+	{{ html()->label('Password:', 'password') }}@if($errors->has('password'))<span class="alert danger">{{ $errors->get('password')[0] }}</span>@endif
 	{{ html()->password('password') }}
 
 	{{ html()->checkbox('remember') }}
@@ -14,4 +18,8 @@
 
 	{{ html()->submit('Log In') }}
 	{{ html()->form()->close() }}
-@endsection('content')
+
+
+
+	<br><br><br><a href="/forgot-password">Forgot Password?</a>
+@endsection

@@ -21,6 +21,10 @@ class RankSeeder extends Seeder
 		['Can Reports', 'Allows the user to manage and handle reports.'],
 		['Can Msg Mod', 'Allows the user to manage all messages and forum posts such as editing and deleting, regardless of post ownership.'],
 		['Block Bypass', 'Allows the user to bypass blocks to view a user\'s profile and posts.'],
+		['Owner Only', 'Can be used to flag roles as "owner".'],
+		['Admin Only', 'Can be used to flag roles as "admin".'],
+		['Mod Only', 'Can be used to flag roles as "moderator".'],
+		['File Access', 'Can be used to flag roles as someone that can access the site files.'],
 	];
 
 	private $ranks = [
@@ -35,10 +39,10 @@ class RankSeeder extends Seeder
 
 	private $rank_perms = [ // This uses the DB id, not the array index
 		[2, 6],
-		[3, 1], [3, 2], [3, 3], [3, 4], [3, 5], [3, 6], [3, 7], [3, 8], [3, 9], [3, 10], [3, 11],
-		[4, 1], [4, 2], [4, 3], [4, 4], [4, 5], [4, 6], [4, 7], [4, 8], [4, 9], [4, 10], [4, 11],
-		[5, 1], [5, 4], [5, 5], [5, 6], [5, 8], [5, 9], [5, 10], [5, 11],
-		[6, 1], [6, 2], [6, 3], [6, 4], [6, 5], [6, 6], [6, 11],
+		[3, 1], [3, 2], [3, 3], [3, 4], [3, 5], [3, 6], [3, 7], [3, 8], [3, 9], [3, 10], [3, 11], [3, 12], [3, 13], [3, 14], [3, 15],
+		[4, 1], [4, 2], [4, 3], [4, 4], [4, 5], [4, 6], [4, 7], [4, 8], [4, 9], [4, 10], [4, 11], [4, 13], [4, 14], [4, 15],
+		[5, 1], [5, 4], [5, 5], [5, 6], [5, 8], [5, 9], [5, 10], [5, 11], [5, 14],
+		[6, 1], [6, 2], [6, 3], [6, 4], [6, 5], [6, 6], [6, 11], [6, 15],
 		[7, 6],
 	];
 

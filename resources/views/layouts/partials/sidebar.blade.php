@@ -2,9 +2,10 @@
 <div class="sidebar">
 	<div>
 		@if($user)
+			{!! $user->display_icon !!}<br>
 			Welcome back, {!! $user->display_name !!}!<br>
-			{{ $user->pri_curr }} {{ $currencies->primary_name }}<br>
-			{{ $user->sec_curr }} {{ $currencies->secondary_name }}<br>
+			{{ $user->pri_curr }} {{ $currencies->primary->name }}<br>
+			{{ $user->sec_curr }} {{ $currencies->secondary->name }}<br>
 		@else
 			Welcome, traveller!
 		@endif

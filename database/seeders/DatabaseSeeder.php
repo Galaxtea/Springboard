@@ -24,7 +24,5 @@ class DatabaseSeeder extends Seeder
 			TagSeeder::class,
 			ProfanitySeeder::class,
 		]);
-
-		DB::table('site_settings')->where('ref_key', 'open_reg')->update(['value' => '0']);
 	}
 }

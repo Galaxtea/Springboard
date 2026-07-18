@@ -17,6 +17,7 @@ class Post extends Model
 	// Model Settings
 		protected $table = 'forum_posts';
 		protected $perPage = 20;
+		protected $with = ['poster'];
 
 		protected $fillable = [
 			'poster_id', 'editor_id', 'thread_id', 'content_bbc', 'content_html',
@@ -34,10 +35,10 @@ class Post extends Model
 			return $this->content_html;
 		}
 		public function getPostedAtAttribute() {
-			return $this->created_at->tz(Config::get('site_settings.site_time'))->format('jS F, Y \a\t g:ia');
+			return $this->created_at->tz(Config::get('site_settings.site_time'))->format(Config::get('site_settings.time_format'));
 		}
 		public function getEditedAtAttribute() {
-			return $this->updated_at->tz(Config::get('site_settings.site_time'))->format('jS F, Y \a\t g:ia');
+			return $this->updated_at->tz(Config::get('site_settings.site_time'))->format(Config::get('site_settings.time_format'));
 		}
 		public function getIsDeletedAttribute() {
 			return $this->deleted_at ? true : false;
@@ -45,8 +46,12 @@ class Post extends Model
 		public function getIsEditedAttribute() {
 			return $this->editor_id ? true : false;
 		}
-		public function getLinkAttribute() {
-			return "/forums/{$this->board->slug}/{$this->thread_id}/post_{$this->id}";
+		public function getReportTypeAttribute() {
+			return "forum_post";
+		}
+		public function link_URL($slug = null) {
+			if(!$slug) $slug = $this->board->slug;
+			return "/forums/{$slug}/{$this->thread_id}/post_{$this->id}";
 		}
 
 

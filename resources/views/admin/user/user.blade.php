@@ -16,7 +16,12 @@
 	Activity List<br>
 	Communications<br>
 	Report History<br>
-	Staff Notes<br>
 	Reset Password<br>
 	Deactivate Account<br>
+	Staff Notes:
+	@php
+		$comments = $player->profile->showComments();
+		$id = $player->id;
+	@endphp
+	<x-comments.comment_section type="user" :$comments :$id/><br>
 @endsection

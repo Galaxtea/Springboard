@@ -5,7 +5,7 @@
 	<h4>Editing {{ $post->poster->username }}'s post on <i>{{ $post->thread->name }}</i></h4>
 	<div class="form-post">
 		<div class="post-user">
-			{!! $post->poster->display_avatar !!}
+			{!! $post->poster->display_icon !!}
 			<b class="name">{!! $post->poster->display_name !!}</b>
 		</div>
 		<div class="post-text {{ $post->is_edited ? 'edited' : ''}}">

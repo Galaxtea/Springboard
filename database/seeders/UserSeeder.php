@@ -5,8 +5,7 @@ namespace Database\Seeders;
 use App\Models\User\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
-use App\Actions\Fortify\CreateNewUser;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -28,17 +27,21 @@ class UserSeeder extends Seeder
 	 */
 	public function run(): void
 	{
-		$newUser = new CreateNewUser;
+		$now = \Carbon\Carbon::now();
 		foreach ($this->users as $user_data) {
-			$user = $newUser->create([
+			$user = User::create([
 				'username' => $user_data[0],
-				'email' => $user_data[0] . '@springboard.nonexistentwebsite',
-				'password' => strtolower($user_data[0]).'potatoes',
-				'password_confirmation' => strtolower($user_data[0]).'potatoes',
-				'birthday' => '2000-05-05',
-				'tos' => true,
-				'privacy' => true
+				'email' => strtolower($user_data[0]).'@springboard.nonexistentwebsite',
+				'password' => Hash::make(strtolower($user_data[0]).'potatoes'),
+				'active_at' => $now,
+				'email_verified_at' => $now
 			]);
+
+			$user->settings()->create(['birthday' => '2000-05-05']);
+
+			$user->stats()->create([]);
+			$user->profile()->create([]);
+
 			$user->update(['rank_id' => $user_data[1]]);
 		}
 	}

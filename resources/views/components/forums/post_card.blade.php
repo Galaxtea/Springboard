@@ -1,8 +1,8 @@
-@props(['post'])
+@props(['post', 'slug'])
 <a id="post_{{ $post->id }}"/>
 <div class="forum-post clearfix {{ $post->is_deleted ? 'deleted' : '' }}">
 	<div class="post-user">
-		{!! $post->poster->display_avatar !!}
+		{!! $post->poster->display_icon !!}
 		<b class="name">{!! $post->poster->display_name !!}</b>
 	</div>
 	@if($user && ($user->isBlocked($post->poster_id) || $user->findBlock($post->poster_id)) && !$user->perms('block_bypass'))
@@ -19,9 +19,9 @@
 							<a href="/forums/post/{{ $post->id }}/edit">E</a> |
 							<a href="" class="msg-delete" data-id="{{ $post->id }}">X</a> |
 						@endif
-						<a href="/report/post/{{ $post->id }}">!</a> |
+						<a href="{{ $post->report_url }}">!</a> |
 					@endif
-					<a href="{{ $post->link }}">L</a>
+					<a href="{{ $post->link_url($slug) }}">L</a>
 				</div>
 			</div>
 			{!! $post->display_content !!}

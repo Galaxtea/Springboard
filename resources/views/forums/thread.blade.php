@@ -11,21 +11,26 @@
 		</div>
 	@endif
 	@if($user)
-		<div class="btn-row">
+		<div class="btn-row clearfix">
 			@if($user->perms('can_msg_mod'))
-				<a href="/forums/manage/{{ $thread->id }}" class="btn">Manage Thread</a>
+				<a href="/forums/manage/{{ $thread->id }}">
+					{{ html()->button('Manage Thread') }}
+				</a>
 			@elseif($thread->poster_id == $user->id)
-				<a href="/thread/manage/{{ $thread->id }}" class="btn">Manage Thread</a>
+				<a href="/thread/manage/{{ $thread->id }}">
+					{{ html()->button('Manage Thread') }}
+				</a>
 			@endif
 
-			<!-- Check if the user is subscribed to the thread -->
+
+
 			@if(!$thread->subbedBy($user->id))
-				{{ html()->form('POST', '/forums/thread/'.$thread->id.'/sub')->open() }}
-				{{ html()->submit('Subscribe') }}
+				{{ html()->form('POST', '/forums/thread/'.$thread->id.'/sub')->attribute('style', 'float: right;')->open() }}
+				{{ html()->submit('Subscribe')->class('success') }}
 				{{ html()->form()->close() }}
 			@else
-				{{ html()->form('POST', '/forums/thread/'.$thread->id.'/unsub')->open() }}
-				{{ html()->submit('Unsubscribe') }}
+				{{ html()->form('POST', '/forums/thread/'.$thread->id.'/unsub')->attribute('style', 'float: right;')->open() }}
+				{{ html()->submit('Unsubscribe')->class('danger') }}
 				{{ html()->form()->close() }}
 			@endif
 		</div>
@@ -33,7 +38,7 @@
 	<h2>{{ $thread->name }}</h2>
 	@foreach($posts as $post)
 		<!-- Check if the viewer has been blocked by or has blocked the poster (make an 'ignore blocks' perm for staffs) -->
-		<x-forums.post_card :$post/>
+		<x-forums.post_card :$post :slug="$board->slug"/>
 	@endforeach
 	{!! $posts->render() !!}
 
@@ -67,7 +72,7 @@
 						<div class="form-group">
 							{{ html()->textareaBBC('content_bbc', null, []) }}
 						</div>
-					{{ html()->submit('Submit Post')->class('btn') }}
+					{{ html()->submit('Submit Post')->class('success') }}
 					{{ html()->form()->close() }}
 				</div>
 			</div>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ReportController;
 
 
 Route::controller(AdminController::class)->prefix('panel')->group(function () {
@@ -23,6 +24,11 @@ Route::controller(AdminController::class)->prefix('panel')->group(function () {
 	// user forum / PM / comment activity
 
 
+	// Move this to the reports.php route!!!
 	// reports - unclaimed / claimed & open / resolved
+	Route::controller(ReportController::class)->group(function () {
+		Route::get('/reports', 'getReportList')->name('admin.reports.list');
+		Route::get('/report/{id}', 'getReport')->name('admin.reports.view');
+	});
 	// report page - status, comments, claiming staff, report discussion, report content link
 });

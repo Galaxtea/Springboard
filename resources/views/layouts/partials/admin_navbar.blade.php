@@ -7,7 +7,7 @@
 	<li><a href="/panel/settings">Site Settings</a></li>
 	<li><a>
 		{{ html()->form('POST', '/logout')->open() }}
-		{{ html()->submit('Log Out') }}
+		{{ html()->submit('Log Out')->forgetAttribute('class') }}
 		{{ html()->form()->close() }}
 	</a></li>
 </div>

@@ -1,8 +1,13 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+
+// Removes expired password reset tokens from the database
+Schedule::command('auth:clear-resets')->everyFifteenMinutes();
+
+
+// Allows ips to be logged for the new day
+Schedule::call(function() {
+	cache()->tags(['ip_history'])->flush();
+})->daily()->timezone(config('site_settings.site_time'))->evenInMaintenanceMode();

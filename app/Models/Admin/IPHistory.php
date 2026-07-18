@@ -11,16 +11,15 @@ class IPHistory extends Model
 
 	// Model Settings
 		protected $table = 'ip_history';
-		public $timestamps = true;
+		public $timestamps = false;
 
 		protected $fillable = [
-			'user_id', 'ip_address'
+			'user_id', 'ip_address', 'created_at'
 		];
 
 		protected function casts(): array {
 			return [
 				'created_at' => 'datetime',
-				'updated_at' => 'datetime',
 			];
 		}
 
@@ -33,12 +32,12 @@ class IPHistory extends Model
 			return self::where('ip_address', $this->ip_address)->get();
 		}
 		public function getOverlapsAttribute() {
-			$query = self::where('ip_address', $this->ip_address)->where(function ($query) {
-				$query->where('created_at', '>=', $this->created_at)->where('created_at', '<=', $this->updated_at)->orWhere(function ($query) {
-					$query->where('updated_at', '>=', $this->created_at)->where('updated_at', '<=', $this->updated_at);
-				});
-			})->get();
-			return $query;
+			// $query = self::where('ip_address', $this->ip_address)->where(function ($query) {
+			// 	$query->where('created_at', '>=', $this->created_at)->where('created_at', '<=', $this->updated_at)->orWhere(function ($query) {
+			// 		$query->where('updated_at', '>=', $this->created_at)->where('updated_at', '<=', $this->updated_at);
+			// 	});
+			// })->get();
+			// return $query;
 		}
 
 

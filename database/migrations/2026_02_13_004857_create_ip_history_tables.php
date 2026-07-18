@@ -12,11 +12,11 @@ return new class extends Migration
 	public function up(): void
 	{
 		Schema::create('ip_history', function (Blueprint $table) {
+			$table->id();
 			$table->foreignId('user_id');
 			$table->ipAddress('ip_address');
-			$table->timestamps();
+			$table->timestamp('created_at')->useCurrent();
 
-			$table->primary(['user_id', 'ip_address']);
 			$table->foreign('user_id')->references('id')->on('users');
 		});
 	}

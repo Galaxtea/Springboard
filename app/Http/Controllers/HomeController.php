@@ -21,4 +21,12 @@ class HomeController extends Controller
 		// Check if the viewer is a staff with perms to see "invisible" users
 		return view('online', ['online_list' => OnlineService::list(auth()->user()?->perms('can_reports'), $request->query('page', '1'))]);
 	}
+
+	public function terms() {
+		return view('legal.terms');
+	}
+
+	public function privacy() {
+		return view('legal.privacy');
+	}
 }
